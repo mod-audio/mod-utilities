@@ -1,10 +1,10 @@
 cd BandPassFilter
 make install
 cd ..
-cd CrossOver
+cd CrossOver2
 make install
 cd ..
-cd CrossOver2
+cd CrossOver3
 make install
 cd ..
 cd Gain
@@ -16,6 +16,9 @@ cd ..
 cd LowPassFilter
 make install
 cd ..
-cd SwitchBox
+cd SwitchBox2
+make install
+cd ..
+cd SwitchBox3
 make install
 cd ..

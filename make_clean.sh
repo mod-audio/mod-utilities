@@ -1,10 +1,10 @@
 cd BandPassFilter
 make clean
 cd ..
-cd CrossOver
+cd CrossOver2
 make clean
 cd ..
-cd CrossOver2
+cd CrossOver3
 make clean
 cd ..
 cd Gain
@@ -16,7 +16,10 @@ cd ..
 cd LowPassFilter
 make clean
 cd ..
-cd SwitchBox
+cd SwitchBox2
+make clean
+cd ..
+cd SwitchBox3
 make clean
 cd ..
 
