@@ -16,3 +16,7 @@ cd ..
 cd LowPassFilter
 make clean
 cd ..
+cd SwitchBox
+make clean
+cd ..
+

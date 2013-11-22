@@ -16,3 +16,6 @@ cd ..
 cd LowPassFilter
 make
 cd ..
+cd SwitchBox
+make
+cd ..
