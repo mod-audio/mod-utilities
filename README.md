@@ -4,7 +4,7 @@ mod-utilities
 Some utilities lv2 plugins developed by mod team
 
 Here you've got some Butterwoth filters,
-some cross overs based on these filters,
+some crossovers based on these filters,
 a simple gain plugin without zipper noise and
 a switch box plugin.
 
