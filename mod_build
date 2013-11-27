@@ -1,0 +1,30 @@
+#!/bin/bash
+
+
+list_bundles() {
+    echo "mod-bpf.lv2"
+    echo "mod-crossover2.lv2"
+    echo "mod-crossover3.lv2"
+    echo "mod-gain.lv2"
+    echo "mod-gain2x2.lv2"
+    echo "mod-hpf.lv2"
+    echo "mod-lpf.lv2"
+    echo "mod-switchbox2.lv2"
+    echo "mod-switchbox3.lv2"
+}
+
+if [ "x${1}x" == "x-lx" ]; then
+    list_bundles
+    exit 0
+fi
+
+if [ "x${LV2_PATH}x" == "xx" ]; then
+    LV2_PATH=~/.lv2/
+fi
+
+for i in BandPassFilter CrossOver2 CrossOver3 Gain Gain2x2 HighPassFilter LowPassFilter SwitchBox2 SwitchBox3; do
+    cd $i
+    make
+    make INSTALL_PATH=$LV2_PATH install
+    cd ..
+done
