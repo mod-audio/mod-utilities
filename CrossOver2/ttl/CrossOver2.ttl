@@ -99,4 +99,6 @@ mod:gui [
         mod:templateData <modgui/data-crossover-2.json>;
         mod:screenshot <modgui/screenshot-crossover-2.png>;
         mod:thumbnail <modgui/thumb-crossover-2.png>;
-    ].
+    ];
+    lv2:minorVersion 1;
+    lv2:microVersion 0.
