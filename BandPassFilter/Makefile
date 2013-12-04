@@ -1,6 +1,9 @@
 
+NAME = mod-bpf
+
 # installation path
-INSTALL_PATH = /usr/local/lib/lv2/mod-bpf.lv2
+INSTALL_PATH = /usr/local/lib/lv2
+COMPLETE_INSTALL_PATH = $(INSTALL_PATH)/$(NAME).lv2
 
 # compiler and linker
 CC = g++
@@ -21,7 +24,7 @@ SRC = $(wildcard src/*.cpp)
 OBJ = $(SRC:.cpp=.o)
 
 # plugin name
-PLUGIN = mod-bpf.so
+PLUGIN = $(NAME).so
 
 $(PLUGIN): $(OBJ)
 	$(LD) $(LDFLAGS) $(OBJ) -o $(PLUGIN) $(LIBS)
@@ -33,6 +36,6 @@ clean:
 	$(RM) src/*.o $(PLUGIN)
 
 install:
-	mkdir -p $(INSTALL_PATH)
-	cp $(PLUGIN) $(INSTALL_PATH)
-	cp ttl/*.ttl $(INSTALL_PATH)
+	mkdir -p $(COMPLETE_INSTALL_PATH)
+	cp $(PLUGIN) $(COMPLETE_INSTALL_PATH)
+	cp ttl/*.ttl $(COMPLETE_INSTALL_PATH)
