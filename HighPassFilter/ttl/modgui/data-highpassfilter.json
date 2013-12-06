@@ -1,0 +1,15 @@
+{
+    "author": "MOD", 
+    "color": "yellow", 
+    "controls": [
+        {
+            "name": "Order", 
+            "symbol": "Order"
+        }, 
+        {
+            "name": "Freq", 
+            "symbol": "Freq"
+        }
+    ], 
+    "label": "HighPass Filter"
+}

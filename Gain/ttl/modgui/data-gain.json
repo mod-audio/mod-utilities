@@ -1,0 +1,11 @@
+{
+    "author": "MOD", 
+    "color": "gray", 
+    "controls": [
+        {
+            "name": "Gain", 
+            "symbol": "Gain"
+        }
+    ], 
+    "label": "Gain"
+}
