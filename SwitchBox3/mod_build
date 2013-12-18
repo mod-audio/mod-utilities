@@ -2,7 +2,7 @@
 
 
 list_bundles() {
-    echo "switchbox2.lv2"
+    echo "switchbox3.lv2"
 }
 
 if [ "x${1}x" == "x-lx" ]; then
