@@ -11,6 +11,7 @@ list_bundles() {
     echo "mod-lpf.lv2"
     echo "mod-switchbox2.lv2"
     echo "mod-switchbox3.lv2"
+    echo "mod-switchtrigger4.lv2"
 }
 
 if [ "x${1}x" == "x-lx" ]; then
