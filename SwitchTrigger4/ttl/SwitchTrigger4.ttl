@@ -12,9 +12,9 @@ a lv2:Plugin, lv2:UtilityPlugin;
 doap:name "SwitchTrigger4";
 
 doap:developer [
-    foaf:name "Andre";
+    foaf:name "Luis Fagundes";
     foaf:homepage <>;
-    foaf:mbox <mailto:andre_coutinho@rocketmail.com>;
+    foaf:mbox <mailto:lhfagundes@hacklab.com.br>;
     ];
 
 doap:maintainer [
@@ -23,7 +23,20 @@ doap:maintainer [
     foaf:mbox <mailto:devel@portalmod.com>;
     ];
 
+rdfs:comment """
+The Switch Trigger gets one audio stream as input and chooses one of four outputs
+to route the audio. The output channel can be selected by triggering the corresponding
+control.
+
+The switch trigger was designed to use the MOD on stage. By addressing each control to a
+footswitch, the musician can quickly access a desired chain of effects.
+""";
+
 doap:license <GPL>;
+
+lv2:minorVersion 1;
+lv2:microVersion 0;
+
 lv2:port 
 [
     a lv2:AudioPort, lv2:InputPort;
