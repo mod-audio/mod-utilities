@@ -27,7 +27,7 @@ public:
     float *in;
     float *out_1;
     float *gain;
-    
+
     float g;
 };
 
@@ -58,9 +58,9 @@ const LV2_Descriptor* lv2_descriptor(uint32_t index)
 LV2_Handle GainControl::instantiate(const LV2_Descriptor* descriptor, double samplerate, const char* bundle_path, const LV2_Feature* const* features)
 {
     GainControl *plugin = new GainControl();
-    
+
     plugin->g = 1;
-    	
+
     return (LV2_Handle)plugin;
 }
 
@@ -104,10 +104,10 @@ void GainControl::connect_port(LV2_Handle instance, uint32_t port, void *data)
 void GainControl::run(LV2_Handle instance, uint32_t n_samples)
 {
     GainControl *plugin;
-    plugin = (GainControl *) instance;    
+    plugin = (GainControl *) instance;
     double g_before = plugin->g;
     plugin->g = pow(10, (float)(*(plugin->gain))/20.0);
-    
+
     for (uint32_t i=1; i<=n_samples; i++)
 	{
 		plugin->out_1[i-1] = (g_before + ((plugin->g - g_before)/(n_samples - 1))*(i-1) )*(float)plugin->in[i-1];
@@ -119,9 +119,6 @@ void GainControl::run(LV2_Handle instance, uint32_t n_samples)
 
 void GainControl::cleanup(LV2_Handle instance)
 {
-	GainControl *plugin;
-	plugin = (GainControl *) instance;
-	
     delete ((GainControl *) instance);
 }
 
