@@ -23,6 +23,9 @@ doap:maintainer [
     foaf:mbox <mailto:devel@portalmod.com>;
     ];
 
+    lv2:minorVersion 1;
+    lv2:microVersion 1;
+
 doap:license <GPL>;
 lv2:port 
 [
@@ -63,6 +66,4 @@ mod:gui [
     mod:templateData <modgui/data-switchbox.json>;
     mod:screenshot <modgui/SwitchBox2.png>;
     mod:thumbnail <modgui/SwitchBox2-thumb.png>;
-] ;
-    lv2:minorVersion 1;
-    lv2:microVersion 1.
+].
