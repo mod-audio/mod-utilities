@@ -10,11 +10,11 @@ CC = g++
 LD = g++
 
 # flags
-CFLAGS = -I. -O3 -ffast-math -Wall -Wextra -march=native -mtune=native -c -fPIC -DPIC
+CFLAGS = -I. -O3 -ffast-math -Wall -march=native -mtune=native -c -fPIC -DPIC
 LDFLAGS = -shared -lc -lm -fPIC -DPIC
 
 # libs
-LIBS = 
+LIBS =
 
 # remove command
 RM = rm -f
