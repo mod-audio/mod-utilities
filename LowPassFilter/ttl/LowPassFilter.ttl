@@ -26,7 +26,13 @@ doap:maintainer [
     ];
 
 doap:license <GPL>;
-lv2:port 
+
+rdfs:comment """
+A simple low pass filter, "Freq" determines its cutoff frequency and "Order" the filter order (or how fast frequencies below the cutoff frequency will decay. Higher the order, faster the decay).
+
+""";
+
+lv2:port
 [
     a lv2:AudioPort, lv2:InputPort;
     lv2:index 0;

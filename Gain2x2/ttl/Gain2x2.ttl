@@ -23,7 +23,13 @@ doap:maintainer [
     ];
 
 doap:license <GPL>;
-lv2:port 
+
+rdfs:comment """
+Stereo version of the simple volume gain plugin without "zipping" noise while messing with the gain parameter.
+
+""";
+
+lv2:port
 [
     a lv2:AudioPort, lv2:InputPort;
     lv2:index 0;

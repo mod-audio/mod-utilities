@@ -26,7 +26,14 @@ doap:maintainer [
     ];
 
 doap:license <GPL>;
-lv2:port 
+
+rdfs:comment """
+This plugin receives an input signal and outputs 3 filtered signals. First one is filtered with a low pass filter (LPF), the second with a band pass filter (BPF) and the third with a high pass filter (HPF), cutoff frequency used on LPF and as the lower frequency from BPF is controlled by "Freq 1" and cutoff frequency used as the higher frequency on BPF and in HPF is controlled by "Freq 2". "Order" indicates filter's orders (or how fast frequencies above (in HPF) or below (in LPF) the cutoff frequency will decay. Higher the order, faster the decay) ."Gain 1", "Gain 2" and "Gain 3" controls the gains of all outputs respectively.
+
+
+""";
+
+lv2:port
 [
     a lv2:AudioPort, lv2:InputPort;
     lv2:index 0;

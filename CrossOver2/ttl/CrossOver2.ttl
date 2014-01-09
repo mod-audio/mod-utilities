@@ -28,7 +28,13 @@ doap:maintainer [
     lv2:minorVersion 1;
     lv2:microVersion 0;
 doap:license <GPL>;
-lv2:port 
+
+rdfs:comment """
+This plugin receives an input signal and outputs 2 filtered signals. First one is filtered with a low pass filter (LPF) and the second, with a high pass filter (HPF), both cutoff frequencies are determined by "Freq" parameter. "Order" indicates filter's orders (or how fast frequencies above (in HPF) or below (in LPF) the cutoff frequency will decay. Higher the order, faster the decay) ."Gain 1" and "Gain 2" controls the gains of both outputs respectively.
+
+""";
+
+lv2:port
 [
     a lv2:AudioPort, lv2:InputPort;
     lv2:index 0;
