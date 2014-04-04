@@ -5,6 +5,8 @@
 
 # comment this out if you don't want to see my debugging output
 # It is actually useful to see when exactly it is changing states.
+
+NAME = mod-note2midi
 # All output is out stderr
 DEBUG = -DDEBUG
 
@@ -16,6 +18,8 @@ PLUGIN = $(shell echo $(DIR_NAME) | tr A-Z a-z).so
 ifndef INSTALL_PATH
 	INSTALL_PATH = /home/lucas/.lv2/teste.lv2/
 endif
+
+COMPLETE_INSTALL_PATH = $(INSTALL_PATH)/$(NAME).lv2
 
 # compiler and linker
 CC = g++
@@ -45,5 +49,6 @@ clean:
 	$(RM) *.o $(PLUGIN)
 
 install: $(OBJ)
-	cp $(PLUGIN) $(INSTALL_PATH)
-	cp *.ttl $(INSTALL_PATH)
+	cp $(PLUGIN) $(COMPLETE_INSTALL_PATH)
+	cp *.ttl $(COMPLETE_INSTALL_PATH)
+	cp -r modgui $(COMPLETE_INSTALL_PATH)
