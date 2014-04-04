@@ -9,6 +9,7 @@ list_bundles() {
     echo "mod-gain2x2.lv2"
     echo "mod-hpf.lv2"
     echo "mod-lpf.lv2"
+    echo "mod-note2midi.lv2"
     echo "mod-switchbox2.lv2"
     echo "mod-switchbox3.lv2"
     echo "mod-switchtrigger4.lv2"

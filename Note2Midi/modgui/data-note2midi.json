@@ -1,0 +1,11 @@
+{
+    "author": "MOD", 
+    "color": "gray", 
+    "controls": [
+        {
+            "name": "Bypass", 
+            "symbol": "bypass"
+        }
+    ], 
+    "label": "note2midi"
+}

@@ -1,0 +1,55 @@
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix lv2:  <http://lv2plug.in/ns/lv2core#> .
+@prefix epp:  <http://lv2plug.in/ns/ext/port-props#> .
+@prefix ev:   <http://lv2plug.in/ns/ext/event#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix units: <http://lv2plug.in/ns/extensions/units#> .
+@prefix mod: <http://portalmod.com/ns/modgui#>.
+@prefix epp: <http://lv2plug.in/ns/ext/port-props/#>.
+@prefix pprops: <http://lv2plug.in/ns/ext/port-props#> .
+@prefix atom:  <http://lv2plug.in/ns/ext/atom#> .
+
+<http://portalmod.com/plugins/MOD/note2midi>
+       a lv2:Plugin ;
+       doap:name "note2midi" ;
+       lv2:binary <note2midi.so> ;
+       lv2:optionalFeature epp:supportsStrictBounds ;
+    lv2:port
+    [
+        a lv2:AudioPort ;
+        a lv2:InputPort ;
+        lv2:index 0 ;
+        lv2:symbol "in" ;
+        lv2:name "in" ;
+    ],
+    [
+        a atom:AtomPort,
+        lv2:OutputPort ;
+        atom:bufferType atom:Sequence ;
+        atom:supports <http://lv2plug.in/ns/ext/midi#MidiEvent> ;
+        lv2:designation lv2:control ;
+        lv2:index 1 ;
+        lv2:symbol "midi_out" ;
+        lv2:name "Midi Out"
+    ],
+    [
+        a lv2:ControlPort ;
+        a lv2:InputPort ;
+        lv2:index 2 ;
+        lv2:symbol "bypass" ;
+        lv2:name "Bypass" ;
+        lv2:portProperty lv2:toggled;
+        lv2:default 1 ;
+        lv2:minimum 0 ;
+        lv2:maximum 1 ;
+    ];
+    mod:gui [
+        a mod:Gui;
+        mod:resourcesDirectory <modgui>;
+        mod:iconTemplate <modgui/icon-note2midi.html>;
+        mod:templateData <modgui/data-note2midi.json>;
+        mod:screenshot <modgui/screenshot-note2midi.png>;
+        mod:thumbnail <modgui/thumb-note2midi.png>;
+    ] .
