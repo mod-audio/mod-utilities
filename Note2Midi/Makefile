@@ -22,7 +22,7 @@ CC = g++
 LD = g++
 
 # flags
-CFLAGS = -I. -I/usr/include/aubio/ -I/usr/local/lib/ -O2 -Wall -fPIC -DPIC -c $(DEBUG) -fpermissive
+CFLAGS = -I. -I/usr/include/aubio/ -I/usr/lib/ -O2 -Wall -fPIC -DPIC -c $(DEBUG) -fpermissive
 LDFLAGS = -shared -Wl --no-undefined -lc -lm -fPIC -DPIC -nostartfiles
 
 # libs
