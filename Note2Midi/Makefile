@@ -18,8 +18,8 @@ ifndef INSTALL_PATH
 endif
 
 # compiler and linker
-CC = clang++
-LD = clang++
+CC = g++
+LD = g++
 
 # flags
 CFLAGS = -I. -I/usr/include/aubio/ -I/usr/local/lib/ -O2 -Wall -fPIC -DPIC -c $(DEBUG) -fpermissive
