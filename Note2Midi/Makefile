@@ -49,6 +49,7 @@ clean:
 	$(RM) *.o $(PLUGIN)
 
 install: $(OBJ)
+	mkdir -p $(COMPLETE_INSTALL_PATH)
 	cp $(PLUGIN) $(COMPLETE_INSTALL_PATH)
 	cp *.ttl $(COMPLETE_INSTALL_PATH)
 	cp -r modgui $(COMPLETE_INSTALL_PATH)
