@@ -18,8 +18,8 @@ ifndef INSTALL_PATH
 endif
 
 # compiler and linker
-CC = g++
-LD = g++
+CC = clang++
+LD = clang++
 
 # flags
 CFLAGS = -I. -I/usr/include/aubio/ -I/usr/local/lib/ -O2 -Wall -fPIC -DPIC -c $(DEBUG) -fpermissive
@@ -47,4 +47,3 @@ clean:
 install: $(OBJ)
 	cp $(PLUGIN) $(INSTALL_PATH)
 	cp *.ttl $(INSTALL_PATH)
-	cp -r modgui $(INSTALL_PATH)

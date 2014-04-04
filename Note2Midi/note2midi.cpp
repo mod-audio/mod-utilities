@@ -1,10 +1,10 @@
 #include <lv2.h>
-#include </usr/local/lib/lv2/atom.lv2/util.h>
-#include </usr/local/lib/lv2/midi.lv2/midi.h>
-#include </usr/local/lib/lv2/patch.lv2/patch.h>
-#include </usr/local/lib/lv2/state.lv2/state.h>
-#include </usr/local/lib/lv2/urid.lv2/urid.h>
-#include </usr/local/lib/lv2/atom.lv2/atom.h>
+#include <lv2/atom.lv2/util.h>
+#include <lv2/midi.lv2/midi.h>
+#include <lv2/patch.lv2/patch.h>
+#include <lv2/state.lv2/state.h>
+#include <lv2/urid.lv2/urid.h>
+#include <lv2/atom.lv2/atom.h>
 
 // #include "./utils.h"
 #include <aubio.h>
@@ -314,7 +314,7 @@ LV2_Handle Note2midi::instantiate(const LV2_Descriptor* descriptor, double Sampl
 }
 
 void Note2midi::activate(LV2_Handle instance)
-{
+{   
 }
 
 void Note2midi::deactivate(LV2_Handle instance)
