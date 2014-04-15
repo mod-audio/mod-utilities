@@ -16,15 +16,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define SAMPLE_COUNT 256 // for fvec_median
 
 #define AUBIO_UNSTABLE 1 // for fvec_median
 #include "utils.h"
 #define PROG_HAS_PITCH 1
 #define PROG_HAS_ONSET 1
 #define PROG_HAS_JACK 1
-// TODO add PROG_HAS_OUTPUT
-// #include "parse_args.h"
+
+#define PARAM_BUFFER_SIZE       256 
+#define PARAM_HOP_SIZE          256
+#define PARAM_PITCH_BUFF_TIMES  8
 
 #define PLUGIN_URI "http://portalmod.com/plugins/MOD/note2midi"
 
@@ -34,37 +35,17 @@
 ************************************************************************************************************************
 */
 
-// static inline LV2_Atom_Event* lv2_atom_sequence_append_event(LV2_Atom_Sequence* seq, uint32_t capacity, const LV2_Atom_Event* event) { 
-//     const uint32_t total_size = (uint32_t)sizeof(*event) + event->body.size; 
-//     if (capacity - seq->atom.size < total_size) { 
-//         return NULL; 
-//     } 
-
-//     LV2_Atom_Event* e = lv2_atom_sequence_end(&seq->body, seq->atom.size); 
-//     memcpy(e, event, total_size); 
-
-//     seq->atom.size += lv2_atom_pad_size(total_size); 
-
-//     return e; 
-// } 
-
 static inline LV2_Atom_Event* lv2_atom_sequence_append_event(LV2_Atom_Sequence* seq, uint32_t capacity, const LV2_Atom_Event* event) { 
     const uint32_t total_size = (uint32_t)sizeof(*event) + event->body.size; 
 
-    // printf("total_size: %i\n", total_size);
-
     if (capacity - seq->atom.size < total_size) { 
-        // printf("NULLLL\n");
         return NULL; 
     } 
-    // printf("capacity: %i, seq->atom.size: %i \n", capacity, seq->atom.size);
 
     LV2_Atom_Event* e = lv2_atom_sequence_end(&seq->body, seq->atom.size); 
     memcpy(e, event, total_size); 
 
     seq->atom.size += lv2_atom_pad_size(total_size); 
-    // printf("Event.atom.size: %i\n", seq->atom.size);
-
     return e; 
 }
 
@@ -80,61 +61,150 @@ lv2_atom_sequence_clear(LV2_Atom_Sequence* seq)
 ************************************************************************************************************************
 */
 
-uint32_t out_capacity;
-uint32_t counter = 0;
+enum {IN, OUT, ONSET_METHOD, ONSET_THRESHOLD, PITCH_METHOD, PITCH_TOLERANCE};
 
-enum {IN, OUT, BYPASS};
+enum {  ONSET_METHOD_ENERGY,
+        ONSET_METHOD_SPECDIFF,
+        ONSET_METHOD_HFC,
+        ONSET_METHOD_COMPLEXDOMAIN,
+        ONSET_METHOD_COMPLEX,
+        ONSET_METHOD_PHASE,
+        ONSET_METHOD_MKL,
+        ONSET_METHOD_KL,
+        ONSET_METHOD_SPECFLUX,
+        ONSET_METHOD_CENTROID,
+        ONSET_METHOD_SPREAD,
+        ONSET_METHOD_SKEWNESS,
+        ONSET_METHOD_KURTOSIS,
+        ONSET_METHOD_SLOPE,
+        ONSET_METHOD_DECREASE,
+        ONSET_METHOD_ROLLOFF,
+        ONSET_METHOD_DEFAULT};
+
+
+enum {  PITCH_METHOD_MCOMB,
+        PITCH_METHOD_YINFFT,
+        PITCH_METHOD_YIN,
+        PITCH_METHOD_SCHMITT,
+        PITCH_METHOD_FCOMB,
+        PITCH_METHOD_SPECACF,
+        PITCH_METHOD_DEFAULT};
 
 typedef struct {
     LV2_Atom_Event  event;
     uint8_t         msg[3];
 }MIDINoteEvent;
 
+// typedef enum {
+//         aubio_onset_energy,         
+//         aubio_onset_specdiff,       
+//         aubio_onset_hfc,            
+//         aubio_onset_complex,        
+//         aubio_onset_phase,          
+//         aubio_onset_kl,             
+//         aubio_onset_mkl             
+// } aubio_onsetdetection_type;
+
+// static aubio_onsetdetection_type detection_types[]={
+//     aubio_onset_energy,
+//     aubio_onset_specdiff ,
+//     aubio_onset_hfc,
+//     aubio_onset_complex,
+//     aubio_onset_phase,
+//     aubio_onset_kl ,
+//     aubio_onset_mkl };
+
+uint32_t out_capacity;
+uint32_t counter = 0;
 smpl_t silence_threshold = -90.;
 
 class Note2midi
 {
 public:
 
+/*
+************************************************************************************************************************
+*           Ports variables
+************************************************************************************************************************
+*/
+
     float *in;
     LV2_Atom_Sequence *out;
-    float *bypass;
+    float *_onset_method;
+    smpl_t *_onset_threshold;
+    float *_pitch_method;
+    smpl_t *_pitch_tolerance;
+
+/*
+************************************************************************************************************************
+*           LV2 midi related variables
+************************************************************************************************************************
+*/
     
     LV2_URID_Map* map;
     LV2_URID atom_sequence;
 
     MIDINoteEvent note;
 
+/*
+************************************************************************************************************************
+*           Aubio related variables
+************************************************************************************************************************
+*/
 
 
-    fvec_t *ibuf;
+/*
+************************************************************************************************************************
+*           ONSET variables
+************************************************************************************************************************
+*/
+    char_t *onset_method;
+    unsigned int current_onset_method;
+    smpl_t onset_threshold;
+    fvec_t *onset;
+    aubio_onset_t *o;
 
-    uint_t median;
+/*
+************************************************************************************************************************
+*           PITCH variables
+************************************************************************************************************************
+*/
+
+    char_t * pitch_unit;
+    char_t * pitch_method;
+    unsigned int current_pitch_method;
+    char_t * tempo_method;
+    smpl_t pitch_tolerance;
+
+    fvec_t *pitch_obuf;
+    aubio_pitch_t *pitch;
 
     fvec_t *note_buffer;
     fvec_t *note_buffer2;
+/*
+************************************************************************************************************************
+*           midi variables
+************************************************************************************************************************
+*/
 
     smpl_t curnote;
     smpl_t newnote;
     uint_t isready;
 
-    aubio_pitch_t *pitch;
-    aubio_onset_t *o;
-    fvec_t *onset;
-    fvec_t *pitch_obuf;
+/*
+************************************************************************************************************************
+*           common variables
+************************************************************************************************************************
+*/
 
+    fvec_t *ibuf;
+    uint_t median;
     uint_t samplerate;
+    // uint_t buffer_size;
+    // uint_t hop_size;
+    // uint_t pitch_buff_times;
 
-    uint_t buffer_size;
-    uint_t hop_size;
 
-    char_t * onset_method;
-    smpl_t onset_threshold;
-
-    char_t * pitch_unit;
-    char_t * pitch_method;
-    smpl_t pitch_tolerance;
-    char_t * tempo_method;
 
     Note2midi() {}
     ~Note2midi() {}
@@ -155,6 +225,12 @@ public:
     void set_plugin();
 };
 
+/*
+************************************************************************************************************************
+*           AUBIO Functions
+************************************************************************************************************************
+*/
+
 void Note2midi::send_noteon (int pitch, int velo)
 {
 
@@ -174,7 +250,7 @@ void Note2midi::send_noteon (int pitch, int velo)
     }
 
     // printf("Ev.time.frames %i, Ev.body.type %i, Ev.body.size %i\n", note.event.time.frames,  note.event.body.type, note.event.body.size);
-
+    printf("FREQ :%i\n", pitch);
     // printf("buff[2] velo: %i, buff[1] pitch: %i, buff[0] on/off: %i\n", note.msg[2], note.msg[1], note.msg[0] );
 
     if(lastnote != mpitch){
@@ -255,11 +331,11 @@ uint_t Note2midi::get_note (fvec_t * note_buffer, fvec_t * note_buffer2){
 }
 
 void Note2midi::set_plugin(){
-   o = new_aubio_onset (onset_method, buffer_size, hop_size, samplerate);
+   o = new_aubio_onset (onset_method, PARAM_BUFFER_SIZE, PARAM_HOP_SIZE, samplerate);
    if (onset_threshold != 0.) aubio_onset_set_threshold (o, onset_threshold);
    onset = new_fvec (1);
 
-   pitch = new_aubio_pitch (pitch_method, buffer_size * 4, hop_size, samplerate);
+   pitch = new_aubio_pitch (pitch_method, PARAM_BUFFER_SIZE * PARAM_PITCH_BUFF_TIMES, PARAM_HOP_SIZE, samplerate);
    if (pitch_tolerance != 0.) aubio_pitch_set_tolerance (pitch, pitch_tolerance);
    pitch_obuf = new_fvec (1);
 
@@ -268,6 +344,12 @@ void Note2midi::set_plugin(){
       note_buffer2 = new_fvec (median);
   }
 }
+
+/*
+************************************************************************************************************************
+*           LV2 Functions
+************************************************************************************************************************
+*/
 
 LV2_Handle Note2midi::instantiate(const LV2_Descriptor* descriptor, double SampleRate, const char* bundle_path, const LV2_Feature* const* features)
 {
@@ -289,26 +371,39 @@ LV2_Handle Note2midi::instantiate(const LV2_Descriptor* descriptor, double Sampl
     }
 
     plugin->atom_sequence = plugin->map->map(plugin->map->handle, LV2_ATOM__Sequence);
-    // plugin->atom_sequence = plugin->map->map(plugin->map->handle, LV2_MIDI__MidiEvent);
 
-    plugin->ibuf = new_fvec(SAMPLE_COUNT);
+    plugin->ibuf = new_fvec(PARAM_BUFFER_SIZE);
 
     plugin->median = 6;
     plugin->curnote = 0.;
     plugin->newnote = 0.;
     plugin->isready = 0;
-    plugin->buffer_size = SAMPLE_COUNT;
-    plugin->hop_size = SAMPLE_COUNT/2;
+
+    // plugin->buffer_size = PARAM_BUFFER_SIZE;
+    // plugin->hop_size = PARAM_HOP_SIZE;
+    
     plugin->onset_method = "default";
+    plugin->current_onset_method = 16;
     plugin->onset_threshold = 0.0; // will be set if != 0.
+    
     plugin->pitch_unit = "default";
     plugin->pitch_method = "default";
+    plugin->current_pitch_method = 6;
     plugin->pitch_tolerance = 0.0; // will be set if != 0.
+    // plugin->pitch_buff_times = PARAM_PITCH_BUFF_TIMES; 
+    
     plugin->tempo_method = "default";
 
     plugin->samplerate = SampleRate;
 
     plugin->set_plugin();
+
+
+    printf("\n\n");
+    printf("buffer size :%i\n", PARAM_BUFFER_SIZE);
+    printf("hop size :%i\n", PARAM_HOP_SIZE);
+    printf("pitch buff times :%i\n", PARAM_PITCH_BUFF_TIMES);
+    printf("\n\n");
 
     return (LV2_Handle)plugin;
 }
@@ -334,8 +429,17 @@ void Note2midi::connect_port(LV2_Handle instance, uint32_t port, void *data)
     case OUT:
         plugin->out = (LV2_Atom_Sequence*) data;
         break;
-    case BYPASS:
-        plugin->bypass = (float*) data;
+    case ONSET_METHOD:
+        plugin->_onset_method = (float*) data;
+        break;
+    case ONSET_THRESHOLD:
+        plugin->_onset_threshold = (float*) data;
+        break;
+    case PITCH_METHOD:
+        plugin->_pitch_method = (float*) data;
+        break;
+    case PITCH_TOLERANCE:
+        plugin->_pitch_tolerance = (float*) data;
         break;
     }
 }
@@ -343,6 +447,113 @@ void Note2midi::connect_port(LV2_Handle instance, uint32_t port, void *data)
 void Note2midi::run(LV2_Handle instance, uint32_t SampleCount)
 {
     Note2midi *plugin = (Note2midi *) instance;
+
+    unsigned int new_onset_method = (unsigned int)(*plugin->_onset_method);
+    unsigned int new_pitch_method = (unsigned int)(*plugin->_pitch_method);
+    char_t* on_meth;
+    char_t* pi_meth;
+
+    aubio_onset_set_threshold(plugin->o, *plugin->_onset_threshold);
+    aubio_pitch_set_tolerance(plugin->pitch, *plugin->_pitch_method);
+
+    if(0 <= new_onset_method && 16 >= new_onset_method &&
+        new_onset_method != plugin->current_onset_method){ 
+        
+        del_aubio_onset(plugin->o);
+
+        switch(new_onset_method){
+            case ONSET_METHOD_ENERGY:
+            on_meth = "energy";
+            break;
+            case ONSET_METHOD_SPECDIFF:
+            on_meth = "specdiff";
+            break;
+            case ONSET_METHOD_HFC:
+            on_meth = "hfc";
+            break;
+            case ONSET_METHOD_COMPLEXDOMAIN:
+            on_meth = "complexdomain";
+            break;
+            case ONSET_METHOD_COMPLEX:
+            on_meth = "complex";
+            break;
+            case ONSET_METHOD_PHASE:
+            on_meth = "phase";
+            break;
+            case ONSET_METHOD_MKL:
+            on_meth = "mkl";
+            break;
+            case ONSET_METHOD_KL:
+            on_meth = "kl";
+            break;
+            case ONSET_METHOD_SPECFLUX:
+            on_meth = "specflux";
+            break;
+            case ONSET_METHOD_CENTROID:
+            on_meth = "centroid";
+            break;
+            case ONSET_METHOD_SPREAD:
+            on_meth = "spread";
+            break;
+            case ONSET_METHOD_SKEWNESS:
+            on_meth = "skewness";
+            break;
+            case ONSET_METHOD_KURTOSIS:
+            on_meth = "kurtosis";
+            break;
+            case ONSET_METHOD_SLOPE:
+            on_meth = "slope";
+            break;
+            case ONSET_METHOD_DECREASE:
+            on_meth = "decrease";
+            break;
+            case ONSET_METHOD_ROLLOFF:
+            on_meth = "rolloff";
+            break;
+            default:
+            on_meth = "default";
+            break;
+        }
+
+
+        plugin->o = new_aubio_onset (on_meth, PARAM_BUFFER_SIZE, PARAM_HOP_SIZE, plugin->samplerate);
+        
+        plugin->current_onset_method = new_onset_method;
+    }
+
+    if(0 <= new_pitch_method && 6 >= new_pitch_method &&
+        new_pitch_method != plugin->current_pitch_method){
+        del_aubio_pitch(plugin->pitch);
+
+        switch(new_pitch_method){
+            case PITCH_METHOD_MCOMB:
+            pi_meth = "mcomb";
+            break;
+            case PITCH_METHOD_YINFFT:
+            pi_meth = "yinfft";
+            break;
+            case PITCH_METHOD_YIN:
+            pi_meth = "yin";
+            break;
+            case PITCH_METHOD_SCHMITT:
+            pi_meth = "schmitt";
+            break;
+            case PITCH_METHOD_FCOMB:
+            pi_meth = "fcomb";
+            break;
+            case PITCH_METHOD_SPECACF:
+            pi_meth = "specacf";
+            break;
+            default:
+            pi_meth = "default";
+            break;
+        }
+
+
+        plugin->pitch = new_aubio_pitch (pi_meth, PARAM_BUFFER_SIZE * PARAM_PITCH_BUFF_TIMES, PARAM_HOP_SIZE, plugin->samplerate);
+        
+        plugin->current_pitch_method = new_pitch_method;
+    }
 
     out_capacity = plugin->out->atom.size;
 
@@ -353,7 +564,7 @@ void Note2midi::run(LV2_Handle instance, uint32_t SampleCount)
 
     counter++;
 
-    if(counter++ >= SAMPLE_COUNT)
+    if(counter++ >= PARAM_BUFFER_SIZE)
         counter = 0;
 
     plugin->process_block();

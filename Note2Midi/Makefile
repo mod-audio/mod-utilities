@@ -16,7 +16,7 @@ PLUGIN = $(shell echo $(DIR_NAME) | tr A-Z a-z).so
 
 # installation path
 ifndef INSTALL_PATH
-	INSTALL_PATH = /home/lucas/.lv2/teste.lv2/
+	INSTALL_PATH = /home/lucas/.lv2
 endif
 
 COMPLETE_INSTALL_PATH = $(INSTALL_PATH)/$(NAME).lv2
@@ -26,12 +26,14 @@ CC = g++
 LD = g++
 
 # flags
-CFLAGS = -I. -I/usr/include/aubio/ -I/usr/lib/ -O2 -Wall -fPIC -DPIC -c $(DEBUG) -fpermissive
+CFLAGS = -I. -I/usr/include/aubio -I/usr/lib/ -I/usr/lib/x86_64-linux-gnu/ -O2 -Wall -fPIC -DPIC -c $(DEBUG) -fpermissive
+# CFLAGS = -I. -I/usr/include/aubio/ -I/usr/lib/ -I/usr/lib/x86_64-linux-gnu/ -O2 -Wall -fPIC -DPIC -c $(DEBUG) -fpermissive
 LDFLAGS = -shared -lc -lm -fPIC -DPIC -nostartfiles
 
 # libs
 # LIBS = -lm -lsamplerate
-LIBS = -ljack -laubio
+STATIC_LIBS = -Bstatic /usr/lib/libaubio.a
+DYNAMIC_LIBS = -Bdynamic -ljack
 # remove command
 RM = rm -f
 
@@ -40,7 +42,7 @@ SRC = $(wildcard *.cpp)
 OBJ = $(SRC:.cpp=.o)
 
 $(PLUGIN): $(OBJ)
-	$(LD) $(LDFLAGS) $(OBJ) -o $(PLUGIN) $(LIBS)
+	$(LD) $(OBJ) $(STATIC_LIBS) $(DYNAMIC_LIBS) $(LDFLAGS) -o $(PLUGIN)
 
 %.o: %.cpp
 	$(CC) $(CFLAGS) -o $@ $<

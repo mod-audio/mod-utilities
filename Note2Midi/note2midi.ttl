@@ -12,7 +12,7 @@
 @prefix atom:  <http://lv2plug.in/ns/ext/atom#> .
 
 <http://portalmod.com/plugins/MOD/note2midi>
-       a lv2:Plugin ;
+       a lv2:Plugin, lv2:UtilityPlugin;
        doap:name "note2midi" ;
        lv2:binary <note2midi.so> ;
        lv2:optionalFeature epp:supportsStrictBounds ;
@@ -38,12 +38,71 @@
         a lv2:ControlPort ;
         a lv2:InputPort ;
         lv2:index 2 ;
-        lv2:symbol "bypass" ;
-        lv2:name "Bypass" ;
-        lv2:portProperty lv2:toggled;
-        lv2:default 1 ;
-        lv2:minimum 0 ;
-        lv2:maximum 1 ;
+        lv2:symbol "onset_type" ;
+        lv2:name "Onset Detection Type" ;
+        lv2:portProperty lv2:enumeration;
+        lv2:portProperty lv2:integer;
+        lv2:portProperty pprops:expensive;
+        lv2:minimum 0;
+        lv2:maximum 16;
+        lv2:default 0;
+        lv2:scalePoint [ rdfs:label "Energy Based";  rdf:value 0 ];
+        lv2:scalePoint [ rdfs:label "Spectral Difference";  rdf:value 1 ];
+        lv2:scalePoint [ rdfs:label "High Frequency Content";  rdf:value 2 ];
+        lv2:scalePoint [ rdfs:label "Complex Domain";  rdf:value 3 ];
+        lv2:scalePoint [ rdfs:label "complex";  rdf:value 4 ];
+        lv2:scalePoint [ rdfs:label "Phase";  rdf:value 5 ];
+        lv2:scalePoint [ rdfs:label "Modified Kullback Liebler";  rdf:value 6 ];
+        lv2:scalePoint [ rdfs:label "Kullback Liebler";  rdf:value 7 ];
+        lv2:scalePoint [ rdfs:label "specflux";  rdf:value 8 ];
+        lv2:scalePoint [ rdfs:label "centroid";  rdf:value 9 ];
+        lv2:scalePoint [ rdfs:label "spread";  rdf:value 10 ];
+        lv2:scalePoint [ rdfs:label "skewness";  rdf:value 11 ];
+        lv2:scalePoint [ rdfs:label "kurtosis";  rdf:value 12 ];
+        lv2:scalePoint [ rdfs:label "slope";  rdf:value 13 ];
+        lv2:scalePoint [ rdfs:label "decrease";  rdf:value 14 ];
+        lv2:scalePoint [ rdfs:label "rolloff";  rdf:value 15 ];
+        lv2:scalePoint [ rdfs:label "default";  rdf:value 16 ];
+    ],
+    [
+        a lv2:ControlPort ;
+        a lv2:InputPort ;
+        lv2:index 3 ;
+        lv2:symbol "onset_threshold" ;
+        lv2:name "Onset Threshold" ;
+        lv2:minimum -90;
+        lv2:maximum 0;
+        lv2:default 0;
+    ],
+    [
+        a lv2:ControlPort ;
+        a lv2:InputPort ;
+        lv2:index 4 ;
+        lv2:symbol "pitch_type" ;
+        lv2:name "Pitch Detection Type" ;
+        lv2:portProperty lv2:enumeration;
+        lv2:portProperty lv2:integer;
+        lv2:portProperty pprops:expensive;
+        lv2:minimum 0;
+        lv2:maximum 6;
+        lv2:default 1;
+        lv2:scalePoint [ rdfs:label "mcomb";  rdf:value 0 ];
+        lv2:scalePoint [ rdfs:label "yinfft";  rdf:value 1 ];
+        lv2:scalePoint [ rdfs:label "schmitt";  rdf:value 3 ];
+        lv2:scalePoint [ rdfs:label "fcomb";  rdf:value 4 ];
+        lv2:scalePoint [ rdfs:label "specacf";  rdf:value 5 ];
+        lv2:scalePoint [ rdfs:label "default";  rdf:value 6 ];
+    ],
+    [
+        a lv2:ControlPort ;
+        a lv2:InputPort ;
+        lv2:index 5 ;
+        lv2:symbol "pitch_tolerance" ;
+        lv2:name "Pitch Tolerance" ;
+        pprops:rangeSteps 100;
+        lv2:minimum 0;
+        lv2:maximum 1;
+        lv2:default 0.0;
     ];
     mod:gui [
         a mod:Gui;
