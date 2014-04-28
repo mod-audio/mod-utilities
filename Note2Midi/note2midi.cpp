@@ -6,7 +6,6 @@
 #include <lv2/urid.lv2/urid.h>
 #include <lv2/atom.lv2/atom.h>
 
-// #include "./utils.h"
 #include <aubio.h>
 #include <aubio/fvec.h>
 #include <aubio/mathutils.h>
@@ -17,11 +16,11 @@
 #include <stdlib.h>
 
 
-#define AUBIO_UNSTABLE 1 // for fvec_median
+// #define AUBIO_UNSTABLE 1 // for fvec_median
 #include "utils.h"
-#define PROG_HAS_PITCH 1
-#define PROG_HAS_ONSET 1
-#define PROG_HAS_JACK 1
+// #define PROG_HAS_PITCH 1
+// #define PROG_HAS_ONSET 1
+// #define PROG_HAS_JACK 1
 
 #define PARAM_BUFFER_SIZE       256 
 #define PARAM_HOP_SIZE          256
@@ -61,7 +60,7 @@ lv2_atom_sequence_clear(LV2_Atom_Sequence* seq)
 ************************************************************************************************************************
 */
 
-enum {IN, OUT, ONSET_METHOD, ONSET_THRESHOLD, PITCH_METHOD, PITCH_TOLERANCE};
+enum {IN, OUT, ONSET_METHOD, ONSET_THRESHOLD, PITCH_METHOD, PITCH_TOLERANCE, SILENCE_THRESHOLD};
 
 enum {  ONSET_METHOD_ENERGY,
         ONSET_METHOD_SPECDIFF,
@@ -95,28 +94,9 @@ typedef struct {
     uint8_t         msg[3];
 }MIDINoteEvent;
 
-// typedef enum {
-//         aubio_onset_energy,         
-//         aubio_onset_specdiff,       
-//         aubio_onset_hfc,            
-//         aubio_onset_complex,        
-//         aubio_onset_phase,          
-//         aubio_onset_kl,             
-//         aubio_onset_mkl             
-// } aubio_onsetdetection_type;
-
-// static aubio_onsetdetection_type detection_types[]={
-//     aubio_onset_energy,
-//     aubio_onset_specdiff ,
-//     aubio_onset_hfc,
-//     aubio_onset_complex,
-//     aubio_onset_phase,
-//     aubio_onset_kl ,
-//     aubio_onset_mkl };
-
 uint32_t out_capacity;
 uint32_t counter = 0;
-smpl_t silence_threshold = -90.;
+smpl_t silence_threshold;
 
 class Note2midi
 {
@@ -134,6 +114,7 @@ public:
     smpl_t *_onset_threshold;
     float *_pitch_method;
     smpl_t *_pitch_tolerance;
+    smpl_t *_silence_threshold;
 
 /*
 ************************************************************************************************************************
@@ -234,8 +215,8 @@ public:
 void Note2midi::send_noteon (int pitch, int velo)
 {
 
-    static int lastnote = 0;
 
+    // smpl_t mpitch = pitch;
     smpl_t mpitch = floor (aubio_freqtomidi (pitch) + .5);
     note.event.body.size = 3;
     note.event.body.type = 19;
@@ -249,15 +230,11 @@ void Note2midi::send_noteon (int pitch, int velo)
       note.msg[0] = 0x90;      /* note on */
     }
 
-    // printf("Ev.time.frames %i, Ev.body.type %i, Ev.body.size %i\n", note.event.time.frames,  note.event.body.type, note.event.body.size);
     printf("FREQ :%i\n", pitch);
-    // printf("buff[2] velo: %i, buff[1] pitch: %i, buff[0] on/off: %i\n", note.msg[2], note.msg[1], note.msg[0] );
+    printf("FREQ TRAD :%f\n\n", mpitch);
 
-    if(lastnote != mpitch){
-        lv2_atom_sequence_append_event(this->out, out_capacity, &note.event);
-    }
+    lv2_atom_sequence_append_event(this->out, out_capacity, &note.event);
 
-    lastnote = (int) mpitch;
 }
 
 void Note2midi::process_block (){
@@ -274,7 +251,7 @@ void Note2midi::process_block (){
     }
 
   /* curlevel is negatif or 1 if silence */
-    curlevel = aubio_level_detection(ibuf, silence_threshold);
+    curlevel = aubio_level_detection(ibuf, *_silence_threshold);
     if (fvec_get_sample(onset, 0)) {
     /* test for silence */
         if (curlevel == 1.) {
@@ -339,6 +316,8 @@ void Note2midi::set_plugin(){
    if (pitch_tolerance != 0.) aubio_pitch_set_tolerance (pitch, pitch_tolerance);
    pitch_obuf = new_fvec (1);
 
+   printf("%s\n", pitch_unit);
+
    if (median) {
       note_buffer = new_fvec (median);
       note_buffer2 = new_fvec (median);
@@ -386,7 +365,8 @@ LV2_Handle Note2midi::instantiate(const LV2_Descriptor* descriptor, double Sampl
     plugin->current_onset_method = 16;
     plugin->onset_threshold = 0.0; // will be set if != 0.
     
-    plugin->pitch_unit = "default";
+    plugin->pitch_unit = "midi";
+    // plugin->pitch_unit = "default";
     plugin->pitch_method = "default";
     plugin->current_pitch_method = 6;
     plugin->pitch_tolerance = 0.0; // will be set if != 0.
@@ -441,6 +421,9 @@ void Note2midi::connect_port(LV2_Handle instance, uint32_t port, void *data)
     case PITCH_TOLERANCE:
         plugin->_pitch_tolerance = (float*) data;
         break;
+    case SILENCE_THRESHOLD:
+        plugin->_silence_threshold = (float*) data;
+        break;
     }
 }
 
@@ -452,6 +435,8 @@ void Note2midi::run(LV2_Handle instance, uint32_t SampleCount)
     unsigned int new_pitch_method = (unsigned int)(*plugin->_pitch_method);
     char_t* on_meth;
     char_t* pi_meth;
+
+    silence_threshold = *(plugin->_silence_threshold);
 
     aubio_onset_set_threshold(plugin->o, *plugin->_onset_threshold);
     aubio_pitch_set_tolerance(plugin->pitch, *plugin->_pitch_method);
@@ -551,7 +536,9 @@ void Note2midi::run(LV2_Handle instance, uint32_t SampleCount)
 
 
         plugin->pitch = new_aubio_pitch (pi_meth, PARAM_BUFFER_SIZE * PARAM_PITCH_BUFF_TIMES, PARAM_HOP_SIZE, plugin->samplerate);
-        
+     
+        // aubio_pitch_set_unit (plugin->pitch, plugin->pitch_unit);
+
         plugin->current_pitch_method = new_pitch_method;
     }
 

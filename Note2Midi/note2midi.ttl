@@ -13,9 +13,32 @@
 
 <http://portalmod.com/plugins/MOD/note2midi>
        a lv2:Plugin, lv2:UtilityPlugin;
-       doap:name "note2midi" ;
+       doap:name "note2midi (beta)" ;
        lv2:binary <note2midi.so> ;
        lv2:optionalFeature epp:supportsStrictBounds ;
+
+rdfs:comment """
+
+This plugin is based on an aubio's (library) example, it utilizes onset detection to analyze where the note begins and pitch detection to tell which note you are playing.
+Here's a brief explanation about the parameters:
+
+Onset Detection Type: The onset detection method to use. See ONSET METHODS are on the source link. Defaults to 'default'.
+
+Onset Threshold: Set the threshold value for the onset peak picking. Typical values are typically within 0.001 and 0.900. Defaults to 0.1. Lower threshold values imply more onsets detected. Try 0.5 in case of over-detections. Defaults to 0.3.
+
+Pitch Detection Type: The pitch detection method to use. See PITCH METHODS are on the source link. Defaults to 'default'.
+
+Pitch Tolerance: Set the tolerance for the pitch detection algorithm. Typical values range between 0.2 and 0.9. Pitch candidates found with a confidence less than this threshold will not be selected. The higher the threshold, the more confidence in the candidates. Defaults to unset.
+
+Silence Threshold: Set the silence threshold, in dB, under which the pitch will not be detected. A value of -20.0 would eliminate most onsets but the loudest ones. A value of -90.0 would select all onsets. Defaults to -90.0.
+
+sources:
+About onset detection: http://aubio.org/manpages/latest/aubioonset.1.html
+About pitch detection: http://aubio.org/manpages/latest/aubiopitch.1.html
+
+""";
+
+
     lv2:port
     [
         a lv2:AudioPort ;
@@ -70,9 +93,9 @@
         lv2:index 3 ;
         lv2:symbol "onset_threshold" ;
         lv2:name "Onset Threshold" ;
-        lv2:minimum -90;
-        lv2:maximum 0;
-        lv2:default 0;
+        lv2:minimum -1;
+        lv2:maximum 3;
+        lv2:default 0.5;
     ],
     [
         a lv2:ControlPort ;
@@ -99,10 +122,19 @@
         lv2:index 5 ;
         lv2:symbol "pitch_tolerance" ;
         lv2:name "Pitch Tolerance" ;
-        pprops:rangeSteps 100;
-        lv2:minimum 0;
+        lv2:minimum -1;
         lv2:maximum 1;
-        lv2:default 0.0;
+        lv2:default 0;
+    ],
+    [
+        a lv2:ControlPort ;
+        a lv2:InputPort ;
+        lv2:index 6 ;
+        lv2:symbol "silence_threshold" ;
+        lv2:name "Silence Threshold" ;
+        lv2:minimum -90;
+        lv2:maximum 0;
+        lv2:default -90;
     ];
     mod:gui [
         a mod:Gui;

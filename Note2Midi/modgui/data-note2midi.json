@@ -17,6 +17,10 @@
         {
             "name": "Pitch Tolerance", 
             "symbol": "pitch_tolerance"
+        }, 
+        {
+            "name": "Silence Threshold", 
+            "symbol": "silence_threshold"
         }
     ], 
     "label": "note2midi"
