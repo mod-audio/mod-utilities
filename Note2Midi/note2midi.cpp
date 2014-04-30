@@ -219,7 +219,8 @@ void Note2midi::send_noteon (int pitch, int velo)
     // smpl_t mpitch = pitch;
     smpl_t mpitch = floor (aubio_freqtomidi (pitch) + .5);
     note.event.body.size = 3;
-    note.event.body.type = 19;
+    note.event.body.type = map->map(map->handle, LV2_MIDI__MidiEvent);
+    // note.event.body.type = 19;
     note.event.time.frames = counter;
     note.msg[2] = velo;
     note.msg[1] = mpitch;
@@ -230,8 +231,8 @@ void Note2midi::send_noteon (int pitch, int velo)
       note.msg[0] = 0x90;      /* note on */
     }
 
-    printf("FREQ :%i\n", pitch);
-    printf("FREQ TRAD :%f\n\n", mpitch);
+    // printf("FREQ :%i\n", pitch);
+    // printf("FREQ TRAD :%f\n\n", mpitch);
 
     lv2_atom_sequence_append_event(this->out, out_capacity, &note.event);
 

@@ -26,14 +26,14 @@ CC = g++
 LD = g++
 
 # flags
-CFLAGS = -I. -I/usr/include/aubio -I/usr/lib/ -I/usr/lib/x86_64-linux-gnu/ -O2 -Wall -fPIC -DPIC -c $(DEBUG) -fpermissive
+CFLAGS = -I. -I/usr/include/aubio -I/usr/lib/ -I/usr/lib/x86_64-linux-gnu/ -O2 -Wall -fPIC -DPIC -c $(DEBUG) -fpermissive -v
 # CFLAGS = -I. -I/usr/include/aubio/ -I/usr/lib/ -I/usr/lib/x86_64-linux-gnu/ -O2 -Wall -fPIC -DPIC -c $(DEBUG) -fpermissive
-LDFLAGS = -shared -lc -lm -fPIC -DPIC -nostartfiles
+LDFLAGS = -shared -lc -lm -fPIC -DPIC -nostartfiles -Wl,--no-undefined
 
 # libs
 # LIBS = -lm -lsamplerate
 STATIC_LIBS = -Bstatic /usr/lib/libaubio.a
-DYNAMIC_LIBS = -Bdynamic -ljack
+DYNAMIC_LIBS = -Bdynamic -ljack -lfftw3f
 # remove command
 RM = rm -f
 
