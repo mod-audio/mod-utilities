@@ -1,0 +1,124 @@
+<style type="text/css" media="screen">
+.mod-toggleswitch4 {
+  background:url(/resources/bg-toggleswitch4.png?bundle=mod-toggleswitch4.lv2&url=http://portalmod.com/plugins/mod-devel/ToggleSwitch4) no-repeat center center;
+  height:600px;
+  position:relative;
+  width:200px;
+}
+
+.mod-toggleswitch4 .mod-pedal-input {
+    top: 250px;
+}
+.mod-toggleswitch4 .mod-pedal-output {
+    top: 40px;
+}
+.mod-toggleswitch4 .mod-output {
+    margin-top: 68px;
+}
+
+.mod-toggleswitch4 .mod-plugin-author {
+  bottom:30px;
+  left:0;
+  position:absolute;
+  right:0;
+  text-align:center;
+}
+.mod-toggleswitch4 .mod-plugin-author h1 {
+  color:white;
+  font-size:21px;
+  text-shadow:0 0 1px black;
+}
+.mod-toggleswitch4 .mod-plugin-name {
+  left:0;
+  position:absolute;
+  right:0;
+  text-align:center;  
+  top:20px;
+}
+.mod-toggleswitch4 .mod-plugin-name h1 {
+  color:white;
+  font-size:18px;
+  text-shadow:0 0 1px black;
+}
+.mod-toggleswitch4 .mod-control-group {
+  border:3px solid white;
+  border-radius:9px;
+  bottom:90px;
+  box-shadow:0 0 1px black;
+  left:70px;
+  position:absolute;
+  right:70px;
+  top:80px;
+}
+.mod-toggleswitch4 .mod-control-group .mod-control {
+  display: block;
+  height:112px;
+  position:relative;
+  text-align:center;
+  width:25%;
+}
+.mod-toggleswitch4 .mod-control-group .mod-control .mod-control-title {
+  bottom:20px;
+  color:white;
+  font-size:11px;
+  left:0;
+  position:absolute;
+  right:0;
+  text-align:center;
+  text-shadow:0 0 1px black;
+  text-transform:uppercase;
+}
+.mod-toggleswitch4 .mod-control-group .mod-control .mod-control-image {
+  background-image:url(/resources/footswitch.png?bundle=mod-toggleswitch4.lv2&url=http://portalmod.com/plugins/mod-devel/ToggleSwitch4);
+  background-position:center center;
+  background-repeat:no-repeat;
+  background-size:auto 72px;
+  height:72px;
+  left:5px;
+  margin:0 auto;
+  position:absolute;
+  right:0;
+  top:10px;
+  width:72px;
+}
+</style>
+
+
+<div class="mod-pedal mod-toggleswitch4">
+    <div mod-role="drag-handle" class="mod-drag-handle"></div>
+    <div class="mod-plugin-author"><h1>MOD</h1></div>
+    <div class="mod-plugin-name"><h1>Toggle Switch</h1></div>
+    <div class="mod-control-group clearfix">
+        <div class="mod-control">
+            <div class="mod-control-image" mod-role="input-control-port" mod-port-symbol="channel1"></div>
+        </div>
+        <div class="mod-control">
+            <div class="mod-control-image" mod-role="input-control-port" mod-port-symbol="channel2"></div>
+        </div>
+        <div class="mod-control">
+            <div class="mod-control-image" mod-role="input-control-port" mod-port-symbol="channel3"></div>
+        </div>
+        <div class="mod-control">
+            <div class="mod-control-image" mod-role="input-control-port" mod-port-symbol="channel4"></div>
+        </div>
+    </div>
+    <div class="mod-pedal-input">
+        {{#effect.ports.audio.input}}
+        <div class="mod-input mod-input-disconnected toggleswitch-input" title="{{name}}" mod-role="input-audio-port" mod-port-symbol="{{symbol}}">
+            <div class="mod-pedal-input-image"></div>
+        </div>
+        {{/effect.ports.audio.input}}
+    </div>
+    <div class="mod-pedal-output">
+        {{#effect.ports.audio.output}}
+        <div class="mod-output mod-output-disconnected mod-toggleswitch-output" title="{{name}}" mod-role="output-audio-port" mod-port-symbol="{{symbol}}">
+            <div class="mod-pedal-output-image"></div>
+        </div>
+        {{/effect.ports.audio.output}}
+        {{#effect.ports.midi.output}}
+        <div class="mod-output mod-output-disconnected" title="{{name}}" mod-role="output-midi-port" mod-port-symbol="{{symbol}}">
+            <div class="mod-pedal-input-image"></div>
+        </div>
+        {{/effect.ports.midi.output}}
+    </div>
+</div>
