@@ -1,0 +1,27 @@
+{
+    "author": "MOD", 
+    "color": "gray", 
+    "controls": [
+        {
+            "name": "Onset Detection Type", 
+            "symbol": "onset_type"
+        }, 
+        {
+            "name": "Onset Threshold", 
+            "symbol": "onset_threshold"
+        }, 
+        {
+            "name": "Pitch Detection Type", 
+            "symbol": "pitch_type"
+        }, 
+        {
+            "name": "Pitch Tolerance", 
+            "symbol": "pitch_tolerance"
+        }, 
+        {
+            "name": "Silence Threshold", 
+            "symbol": "silence_threshold"
+        }
+    ], 
+    "label": "note2midi (beta)"
+}
