@@ -32,8 +32,8 @@ LDFLAGS = -shared -lc -lm -fPIC -DPIC -nostartfiles -Wl,--no-undefined
 
 # libs
 # LIBS = -lm -lsamplerate
-STATIC_LIBS = -Bstatic /usr/lib/libaubio.a
-DYNAMIC_LIBS = -Bdynamic -ljack -lfftw3f
+STATIC_LIBS = -Bstatic /usr/lib/libaubio.a /usr/lib/x86_64-linux-gnu/libfftw3f.a -ljack
+DYNAMIC_LIBS = -Bdynamic -ljack -lfftw3f	
 # remove command
 RM = rm -f
 
@@ -42,7 +42,8 @@ SRC = $(wildcard *.cpp)
 OBJ = $(SRC:.cpp=.o)
 
 $(PLUGIN): $(OBJ)
-	$(LD) $(OBJ) $(STATIC_LIBS) $(DYNAMIC_LIBS) $(LDFLAGS) -o $(PLUGIN)
+	$(LD) $(OBJ) $(STATIC_LIBS) $(LDFLAGS) -o $(PLUGIN)
+	# $(LD) $(OBJ) $(STATIC_LIBS) $(DYNAMIC_LIBS) $(LDFLAGS) -o $(PLUGIN)
 
 %.o: %.cpp
 	$(CC) $(CFLAGS) -o $@ $<
