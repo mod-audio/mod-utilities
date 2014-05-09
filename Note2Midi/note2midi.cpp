@@ -23,8 +23,9 @@
 // #define PROG_HAS_JACK 1
 
 #define PARAM_BUFFER_SIZE       256 
-#define PARAM_HOP_SIZE          256
 #define PARAM_PITCH_BUFF_TIMES  8
+#define PARAM_HOP_SIZE_ONSET    128
+#define PARAM_HOP_SIZE_PITCH    256
 
 #define PLUGIN_URI "http://portalmod.com/plugins/MOD/note2midi"
 
@@ -216,11 +217,10 @@ void Note2midi::send_noteon (int pitch, int velo)
 {
 
 
-    // smpl_t mpitch = pitch;
-    smpl_t mpitch = floor (aubio_freqtomidi (pitch) + .5);
+    smpl_t mpitch = pitch;
+    // smpl_t mpitch = floor (aubio_freqtomidi (pitch) + .5);
     note.event.body.size = 3;
     note.event.body.type = map->map(map->handle, LV2_MIDI__MidiEvent);
-    // note.event.body.type = 19;
     note.event.time.frames = counter;
     note.msg[2] = velo;
     note.msg[1] = mpitch;
@@ -231,7 +231,7 @@ void Note2midi::send_noteon (int pitch, int velo)
       note.msg[0] = 0x90;      /* note on */
     }
 
-    // printf("FREQ :%i\n", pitch);
+    printf("FREQ :%i\n", pitch);
     // printf("FREQ TRAD :%f\n\n", mpitch);
 
     lv2_atom_sequence_append_event(this->out, out_capacity, &note.event);
@@ -309,11 +309,11 @@ uint_t Note2midi::get_note (fvec_t * note_buffer, fvec_t * note_buffer2){
 }
 
 void Note2midi::set_plugin(){
-   o = new_aubio_onset (onset_method, PARAM_BUFFER_SIZE, PARAM_HOP_SIZE, samplerate);
+   o = new_aubio_onset (onset_method, PARAM_BUFFER_SIZE, PARAM_HOP_SIZE_ONSET, samplerate);
    if (onset_threshold != 0.) aubio_onset_set_threshold (o, onset_threshold);
    onset = new_fvec (1);
 
-   pitch = new_aubio_pitch (pitch_method, PARAM_BUFFER_SIZE * PARAM_PITCH_BUFF_TIMES, PARAM_HOP_SIZE, samplerate);
+   pitch = new_aubio_pitch (pitch_method, PARAM_BUFFER_SIZE * PARAM_PITCH_BUFF_TIMES, PARAM_HOP_SIZE_PITCH, samplerate);
    if (pitch_tolerance != 0.) aubio_pitch_set_tolerance (pitch, pitch_tolerance);
    pitch_obuf = new_fvec (1);
 
@@ -382,7 +382,8 @@ LV2_Handle Note2midi::instantiate(const LV2_Descriptor* descriptor, double Sampl
 
     printf("\n\n");
     printf("buffer size :%i\n", PARAM_BUFFER_SIZE);
-    printf("hop size :%i\n", PARAM_HOP_SIZE);
+    printf("hop size onset:%i\n", PARAM_HOP_SIZE_ONSET);
+    printf("hop size pitch:%i\n", PARAM_HOP_SIZE_PITCH);
     printf("pitch buff times :%i\n", PARAM_PITCH_BUFF_TIMES);
     printf("\n\n");
 
@@ -502,7 +503,7 @@ void Note2midi::run(LV2_Handle instance, uint32_t SampleCount)
         }
 
 
-        plugin->o = new_aubio_onset (on_meth, PARAM_BUFFER_SIZE, PARAM_HOP_SIZE, plugin->samplerate);
+        plugin->o = new_aubio_onset (on_meth, PARAM_BUFFER_SIZE, PARAM_HOP_SIZE_ONSET, plugin->samplerate);
         
         plugin->current_onset_method = new_onset_method;
     }
@@ -536,9 +537,9 @@ void Note2midi::run(LV2_Handle instance, uint32_t SampleCount)
         }
 
 
-        plugin->pitch = new_aubio_pitch (pi_meth, PARAM_BUFFER_SIZE * PARAM_PITCH_BUFF_TIMES, PARAM_HOP_SIZE, plugin->samplerate);
+        plugin->pitch = new_aubio_pitch (pi_meth, PARAM_BUFFER_SIZE * PARAM_PITCH_BUFF_TIMES, PARAM_HOP_SIZE_PITCH, plugin->samplerate);
      
-        // aubio_pitch_set_unit (plugin->pitch, plugin->pitch_unit);
+        aubio_pitch_set_unit (plugin->pitch, plugin->pitch_unit);
 
         plugin->current_pitch_method = new_pitch_method;
     }
