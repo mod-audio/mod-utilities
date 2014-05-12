@@ -30,8 +30,9 @@ CFLAGS = -I. -I/usr/include/aubio -I/usr/lib/ -O2 -Wall -fPIC -DPIC -c $(DEBUG) 
 LDFLAGS = -shared -lc -lm -fPIC -DPIC -nostartfiles -Wl,--no-undefined
 
 # libs
-STATIC_LIBS = -Bstatic /usr/lib/libaubio.a /usr/lib/x86_64-linux-gnu/libfftw3f.a
-DYNAMIC_LIBS = -Bdynamic -lfftw3f
+STATIC_LIBS = -Wl,-Bstatic /usr/lib/libaubio.a
+# STATIC_LIBS = -Bstatic /usr/lib/libaubio.a /usr/lib/x86_64-linux-gnu/libfftw3f.a
+DYNAMIC_LIBS = -Wl,-Bdynamic -lfftw3f
 
 # remove command
 RM = rm -f
@@ -41,8 +42,8 @@ SRC = $(wildcard *.cpp)
 OBJ = $(SRC:.cpp=.o)
 
 $(PLUGIN): $(OBJ)
-	$(LD) $(OBJ) $(STATIC_LIBS) $(LDFLAGS) -o $(PLUGIN)
-	# $(LD) $(OBJ) $(STATIC_LIBS) $(DYNAMIC_LIBS) $(LDFLAGS) -o $(PLUGIN)
+	# $(LD) $(OBJ) $(STATIC_LIBS) $(LDFLAGS) -o $(PLUGIN)
+	$(LD) $(OBJ) $(STATIC_LIBS) $(DYNAMIC_LIBS) $(LDFLAGS) -o $(PLUGIN)
 
 %.o: %.cpp
 	$(CC) $(CFLAGS) -o $@ $<
