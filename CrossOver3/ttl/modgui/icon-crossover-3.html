@@ -1,16 +1,39 @@
-<div class="mod-pedal mod-pedal-boxy mod-five-knobs mod-{{color}}">
+<div class="mod-crossover-3 mod-pedal mod-pedal-boxy">
     <div mod-role="drag-handle" class="mod-drag-handle"></div>
     <div class="mod-plugin-author"><h1>{{author}}</h1></div>
     <div class="mod-plugin-name"><h1>{{label}}</h1></div>
-    <div class="mod-light on" mod-role="bypass-light"></div>
     <div class="mod-control-group clearfix">
-        {{#controls}}
-        <div class="mod-knob">
-            <div class="mod-knob-image" mod-role="input-control-port" mod-port-symbol="{{symbol}}"></div>
-            <span class="mod-knob-title">{{name}}</span>
+        <div class="mod-knob" id="Freq_1" >
+            <span class="mod-knob-title">Freq 1</span>
+             <div class="mod-knob-value" mod-role="input-control-value" mod-port-symbol="Freq_1"></div>
+            <div class="mod-knob-image" mod-role="input-control-port" mod-port-symbol="Freq_1"></div>
         </div>
-        {{/controls}}
+        <div class="mod-knob" id="Freq_2">
+            <div class="mod-knob-image" mod-role="input-control-port" mod-port-symbol="Freq_2"></div>
+            <span class="mod-knob-title">Freq 1</span>
+            <div class="mod-knob-value" mod-role="input-control-value" mod-port-symbol="Freq_2"></div>
+        </div>
+
+        <div class="mod-knob" id="Gain_1">
+            <div class="mod-knob-image" mod-role="input-control-port" mod-port-symbol="Gain_1"></div>
+            <span class="mod-knob-title">Gain 1</span>
+        </div>
+        <div class="mod-knob" id="Gain_2">
+            <div class="mod-knob-image" mod-role="input-control-port" mod-port-symbol="Gain_2"></div>
+            <span class="mod-knob-title">Gain 2</span>
+        </div>
+        <div class="mod-knob" id="Gain_3">
+            <div class="mod-knob-image" mod-role="input-control-port" mod-port-symbol="Gain_3"></div>
+            <span class="mod-knob-title">Gain 3</span>
+        </div>
+        <div class="mod-knob" id="Order">
+            <div class="mod-knob-image" mod-role="input-control-port" mod-port-symbol="Order"></div>
+            <span class="mod-knob-title">Order</span>
+        </div>
+
     </div>
+        <div class="mod-light on" mod-role="bypass-light"></div>
+
     <div class="mod-footswitch" mod-role="bypass"></div>
     <div class="mod-pedal-input">
         {{#effect.ports.audio.input}}
@@ -37,3 +60,112 @@
         {{/effect.ports.midi.output}}
     </div>
 </div>
+<style>
+    .mod-crossover-3 * {
+        color: white !important;
+    }
+    .mod-crossover-3 .mod-plugin-name , .mod-crossover-3 .mod-plugin-author  {
+        display: none;
+    }
+    .mod-crossover-3 .mod-control-group .mod-knob#Order {
+        position: absolute;
+        top: 115px;
+        width: 80px;
+        height: 80px;
+        left: 80px
+    }
+    .mod-crossover-3 .mod-control-group .mod-knob#Order .mod-knob-image {
+        background-image:url(/resources/3switch.png{{{ns}}}) !important;
+        background-repeat:no-repeat;
+        background-size:240px 80px;
+        height:60px;
+        margin:0 auto;
+        width:80px;
+        cursor: pointer;
+    }
+    .mod-crossover-3 .mod-knob-title {
+        position: relative !important;
+        padding-top: 20px;
+    }
+    .mod-crossover-3 {
+        background-image:url(/resources/crossover3x.png{{{ns}}}) !important;
+        background-size:281px 454px;
+        width: 281px;
+        height: 454px;
+    }
+    .mod-crossover-3 .mod-control-group {
+        top: 59px;
+    }
+    #Freq_1 , #Freq_2 {
+        position: absolute;
+        width: 100px;
+        left: 0;
+    }
+    #Freq_1 {
+        top: 15px; 
+    }
+    #Freq_2 {
+        top: 178px; 
+    }
+    #Gain_1, #Gain_2, #Gain_3 {
+        position: absolute;
+        right: -3px;    
+    }
+    #Gain_2 {
+        top: 117px;
+    }
+    #Gain_3 {
+        top: 238px;
+    }
+
+    .mod-crossover-3 .mod-control-group .mod-knob .mod-knob-image {
+      background-image: url(/resources/knob.png{{{ns}}});
+      background-position:left center;
+      background-repeat:no-repeat;
+      background-size:auto 70px;
+      height:70px;
+      width:70px;
+      margin:0 auto;
+      cursor: pointer;
+      position:relative;
+      overflow:hidden;
+    }
+    .mod-crossover-3 .mod-light {
+        top: 315px;
+        margin-left: 4px;
+    }
+    .mod-crossover-3 .mod-footswitch {
+        background-image:url(/resources/footswitch.png{{{ns}}});
+        background-position:top center;
+        background-repeat:no-repeat;
+        background-size:auto 132px;
+        bottom: 20px;
+        cursor:pointer;
+        height:66px;
+        left: 12px !important;
+        position:absolute;
+    }
+    .mod-crossover-3 .mod-knob-value {
+        color: #84ff00 !important;
+        background: #222;
+        font-family: monospace;
+        text-align: right;
+        margin: 5px 0 3px 0;
+        border: 1px inset #555
+    }
+    .mod-crossover-3 .mod-footswitch.on {
+        background-position:top center;
+    }
+    .mod-crossover-3 .mod-footswitch.off {
+        background-position:bottom center;
+    }
+    .mod-crossover-3 .mod-pedal-input {
+        top: 212px;
+    }
+    .mod-crossover-3 .mod-pedal-output {
+        top: 92px;
+    }
+    .mod-crossover-3 .mod-pedal-output>*  {
+        margin-bottom: 75px !important;
+    }
+</style>
