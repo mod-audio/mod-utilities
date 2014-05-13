@@ -18,6 +18,7 @@
        lv2:optionalFeature epp:supportsStrictBounds ;
 
 rdfs:comment """
+
 This plugin is based on an aubio's (library) example, it utilizes onset detection to analyze where the note begins and pitch detection to tell which note you are playing.
 Here's a brief explanation about the parameters:
 

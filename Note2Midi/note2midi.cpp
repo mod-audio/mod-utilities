@@ -1,3 +1,4 @@
+#include <math.h>
 #include <lv2.h>
 #include <lv2/atom.lv2/util.h>
 #include <lv2/midi.lv2/midi.h>
@@ -16,15 +17,10 @@
 #include <stdlib.h>
 
 
-// #define AUBIO_UNSTABLE 1 // for fvec_median
-#include "utils.h"
-// #define PROG_HAS_PITCH 1
-// #define PROG_HAS_ONSET 1
-// #define PROG_HAS_JACK 1
-
 #define PARAM_BUFFER_SIZE       256 
-#define PARAM_PITCH_BUFF_TIMES  8
-#define PARAM_HOP_SIZE_ONSET    128
+#define PARAM_PITCH_BUFF_TIMES  4
+
+#define PARAM_HOP_SIZE_ONSET    256
 #define PARAM_HOP_SIZE_PITCH    256
 
 #define PLUGIN_URI "http://portalmod.com/plugins/MOD/note2midi"
@@ -217,22 +213,24 @@ void Note2midi::send_noteon (int pitch, int velo)
 {
 
 
-    smpl_t mpitch = pitch;
-    // smpl_t mpitch = floor (aubio_freqtomidi (pitch) + .5);
+    // smpl_t mpitch = pitch;
+    smpl_t mpitch = floor (aubio_freqtomidi (pitch) + .5);
     note.event.body.size = 3;
     note.event.body.type = map->map(map->handle, LV2_MIDI__MidiEvent);
     note.event.time.frames = counter;
     note.msg[2] = velo;
     note.msg[1] = mpitch;
     if (velo == 0) {
-      note.msg[0] = 0x80;      /* note off */
+        printf("off ");
+        note.msg[0] = 0x80;      /* note off */
     }
     else{
-      note.msg[0] = 0x90;      /* note on */
+        printf("on ");
+        note.msg[0] = 0x90;      /* note on */
     }
 
     printf("FREQ :%i\n", pitch);
-    // printf("FREQ TRAD :%f\n\n", mpitch);
+    printf("MIDI :%f\n\n", mpitch);
 
     lv2_atom_sequence_append_event(this->out, out_capacity, &note.event);
 
@@ -366,8 +364,8 @@ LV2_Handle Note2midi::instantiate(const LV2_Descriptor* descriptor, double Sampl
     plugin->current_onset_method = 16;
     plugin->onset_threshold = 0.0; // will be set if != 0.
     
-    plugin->pitch_unit = "midi";
-    // plugin->pitch_unit = "default";
+    // plugin->pitch_unit = "midi";
+    plugin->pitch_unit = "default";
     plugin->pitch_method = "default";
     plugin->current_pitch_method = 6;
     plugin->pitch_tolerance = 0.0; // will be set if != 0.
@@ -539,7 +537,7 @@ void Note2midi::run(LV2_Handle instance, uint32_t SampleCount)
 
         plugin->pitch = new_aubio_pitch (pi_meth, PARAM_BUFFER_SIZE * PARAM_PITCH_BUFF_TIMES, PARAM_HOP_SIZE_PITCH, plugin->samplerate);
      
-        aubio_pitch_set_unit (plugin->pitch, plugin->pitch_unit);
+        // aubio_pitch_set_unit (plugin->pitch, plugin->pitch_unit);
 
         plugin->current_pitch_method = new_pitch_method;
     }
