@@ -30,7 +30,7 @@ LDFLAGS = -shared -lc -lm -fPIC -DPIC -nostartfiles
 
 # libs
 # LIBS = -lm -lsamplerate
-LIBS = -ljack
+LIBS =
 # remove command
 RM = rm -f
 
