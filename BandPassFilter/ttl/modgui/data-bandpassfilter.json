@@ -1,11 +1,7 @@
 {
     "author": "MOD", 
-    "color": "yellow", 
+    "color": "gray", 
     "controls": [
-        {
-            "name": "Order", 
-            "symbol": "Order"
-        }, 
         {
             "name": "Freq", 
             "symbol": "Freq"
@@ -13,6 +9,10 @@
         {
             "name": "Q", 
             "symbol": "Q"
+        }, 
+        {
+            "name": "Order", 
+            "symbol": "Order"
         }
     ], 
     "label": "BandPass Filter"
