@@ -16,9 +16,8 @@ DIR_NAME = $(shell basename "`pwd`")
 PLUGIN = $(shell echo $(DIR_NAME) | tr A-Z a-z).so
 
 # installation path
-ifndef INSTALL_PATH
-	INSTALL_PATH = /usr/local/lib/lv2/mod-peakmeter.lv2/
-endif
+INSTALL_PATH = /usr/local/lib/lv2
+COMPLETE_INSTALL_PATH = $(INSTALL_PATH)/$(NAME).lv2
 
 # compiler and linker
 CC = g++
@@ -48,6 +47,6 @@ clean:
 	$(RM) *.o $(PLUGIN)
 
 install: $(OBJ)
-	mkdir -p $(INSTALL_PATH)
-	cp $(PLUGIN) $(INSTALL_PATH)
-	cp *.ttl $(INSTALL_PATH)
+	mkdir -p $(COMPLETE_INSTALL_PATH)
+	cp $(PLUGIN) $(COMPLETE_INSTALL_PATH)
+	cp *.ttl $(COMPLETE_INSTALL_PATH)
