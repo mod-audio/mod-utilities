@@ -17,7 +17,7 @@ PLUGIN = $(shell echo $(DIR_NAME) | tr A-Z a-z).so
 
 # installation path
 ifndef INSTALL_PATH
-	INSTALL_PATH = /usr/local/lib/lv2/peakmeter.lv2/
+	INSTALL_PATH = /usr/local/lib/lv2/mod-peakmeter.lv2/
 endif
 
 # compiler and linker

@@ -11,7 +11,7 @@
 @prefix pprops: <http://lv2plug.in/ns/ext/port-props#> .
 
 
-<http://portalmod.com/plugins/MOD/peakmeter>
+<http://portalmod.com/plugins/mod-devel/peakmeter>
        a lv2:Plugin ;
        doap:name "Peakmeter" ;
        lv2:binary <peakmeter.so> ;

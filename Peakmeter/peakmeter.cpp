@@ -32,7 +32,7 @@ inline void AVOIDDENORMALS() {}
 
 
 
-#define PLUGIN_URI "http://portalmod.com/plugins/MOD/peakmeter"
+#define PLUGIN_URI "http://portalmod.com/plugins/mod-devel/peakmeter"
 
 
 // globals
