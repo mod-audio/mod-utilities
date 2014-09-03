@@ -17,7 +17,7 @@ PLUGIN = $(shell echo $(DIR_NAME) | tr A-Z a-z).so
 
 # installation path
 ifndef INSTALL_PATH
-	INSTALL_PATH = /home/lucas/.lv2/peakmeter.lv2/
+	INSTALL_PATH = /usr/local/lib/lv2/peakmeter.lv2/
 endif
 
 # compiler and linker
@@ -48,5 +48,6 @@ clean:
 	$(RM) *.o $(PLUGIN)
 
 install: $(OBJ)
+	mkdir -p $(INSTALL_PATH)
 	cp $(PLUGIN) $(INSTALL_PATH)
 	cp *.ttl $(INSTALL_PATH)
