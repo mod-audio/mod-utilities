@@ -5,8 +5,11 @@ Some utilities lv2 plugins developed by mod team
 
 Here you've got some Butterwoth filters,
 some crossovers based on these filters,
-a simple gain plugin without zipper noise and
-a switch box plugin.
+simple gain plugins without zipper noise,
+two switch box plugins, a switch trigger,
+a toogle switch and a peakmeter.
+
+Note2Midi is EXPERIMENTAL and it's NOT WORKING yet.
 
 Installation:
 
