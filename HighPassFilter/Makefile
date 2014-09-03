@@ -39,5 +39,5 @@ install:
 	mkdir -p $(COMPLETE_INSTALL_PATH)
 	cp $(PLUGIN) $(COMPLETE_INSTALL_PATH)
 	cp ttl/*.ttl $(COMPLETE_INSTALL_PATH)
-	mkdir $(COMPLETE_INSTALL_PATH)/modgui
+	mkdir -p $(COMPLETE_INSTALL_PATH)/modgui
 	cp ttl/modgui/* $(COMPLETE_INSTALL_PATH)/modgui
