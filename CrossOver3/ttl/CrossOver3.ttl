@@ -126,14 +126,15 @@ lv2:port
     lv2:minimum 0;
     lv2:maximum 2;
 ];
-    mod:gui [
-        a mod:Gui;
-        mod:resourcesDirectory <modgui>;
-        mod:iconTemplate <modgui/icon-crossover-3.html>;
-        mod:templateData <modgui/data-crossover-3.json>;
-        mod:screenshot <modgui/screenshot-crossover-3.png>;
-        mod:thumbnail <modgui/thumb-crossover-3.png>;
-    ];
 
-    lv2:minorVersion 1;
-    lv2:microVersion 0.
+mod:gui [
+    a mod:Gui;
+    mod:resourcesDirectory <modgui>;
+    mod:iconTemplate <modgui/icon-crossover-3.html>;
+    mod:templateData <modgui/data-crossover-3.json>;
+    mod:screenshot <modgui/screenshot-crossover-3.png>;
+    mod:thumbnail <modgui/thumb-crossover-3.png>;
+];
+
+lv2:minorVersion 1;
+lv2:microVersion 0 .
