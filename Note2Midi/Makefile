@@ -26,8 +26,8 @@ CC = g++
 LD = g++
 
 # flags
-CFLAGS = -I. -I/usr/include/aubio -I/usr/lib/ -O2 -Wall -fPIC -DPIC -c $(DEBUG) -fpermissive
-LDFLAGS = -shared -lc -lm -fPIC -DPIC -nostartfiles -Wl,--no-undefined
+CFLAGS += -I. -I/usr/include/aubio -I/usr/lib/ -O2 -Wall -fPIC -DPIC -c $(DEBUG) -fpermissive
+LDFLAGS += -shared -lc -lm -fPIC -DPIC -nostartfiles -Wl,--no-undefined
 
 # libs
 STATIC_LIBS = -Wl,-Bstatic /usr/lib/libaubio.a
