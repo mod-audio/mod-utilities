@@ -24,8 +24,8 @@ CC = g++
 LD = g++
 
 # flags
-CFLAGS = -std=c++11 -I. -O2 -Wall -fPIC -DPIC -c -fpermissive
-LDFLAGS = -shared -lc -lm -fPIC -DPIC -nostartfiles
+CFLAGS += -std=c++11 -c
+LDFLAGS += -shared -lm
 
 # libs
 # LIBS = -lm -lsamplerate

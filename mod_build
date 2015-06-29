@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -e
 
 list_bundles() {
     echo "mod-bpf.lv2"
