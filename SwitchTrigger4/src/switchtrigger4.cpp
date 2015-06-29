@@ -6,7 +6,7 @@
 
 /**********************************************************************************************************************************************************/
 
-#define PLUGIN_URI "http://portalmod.com/plugins/mod-devel/SwitchTrigger4"
+#define PLUGIN_URI "http://moddevices.com/plugins/mod-devel/SwitchTrigger4"
 enum {IN, OUT_1, OUT_2, OUT_3, OUT_4, CHANNEL1, CHANNEL2, CHANNEL3, CHANNEL4};
 
 /**********************************************************************************************************************************************************/

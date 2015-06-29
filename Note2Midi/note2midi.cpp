@@ -23,7 +23,7 @@
 #define PARAM_HOP_SIZE_ONSET    256
 #define PARAM_HOP_SIZE_PITCH    256
 
-#define PLUGIN_URI "http://portalmod.com/plugins/MOD/note2midi"
+#define PLUGIN_URI "http://moddevices.com/plugins/MOD/note2midi"
 
 /*
 ************************************************************************************************************************

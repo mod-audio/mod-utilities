@@ -6,12 +6,12 @@
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix units: <http://lv2plug.in/ns/extensions/units#> .
-@prefix mod: <http://portalmod.com/ns/modgui#>.
+@prefix mod: <http://moddevices.com/ns/modgui#>.
 @prefix epp: <http://lv2plug.in/ns/ext/port-props/#>.
 @prefix pprops: <http://lv2plug.in/ns/ext/port-props#> .
 @prefix atom:  <http://lv2plug.in/ns/ext/atom#> .
 
-<http://portalmod.com/plugins/MOD/note2midi>
+<http://moddevices.com/plugins/MOD/note2midi>
        a lv2:Plugin, lv2:UtilityPlugin;
        doap:name "note2midi (beta)" ;
        lv2:binary <note2midi.so> ;

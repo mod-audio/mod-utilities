@@ -6,7 +6,7 @@
 
 /**********************************************************************************************************************************************************/
 
-#define PLUGIN_URI "http://portalmod.com/plugins/mod-devel/Gain2x2"
+#define PLUGIN_URI "http://moddevices.com/plugins/mod-devel/Gain2x2"
 #define TAMANHO_DO_BUFFER 1024
 enum {IN_1, IN_2, OUT_1, OUT_2, GAIN, PLUGIN_PORT_COUNT};
 
