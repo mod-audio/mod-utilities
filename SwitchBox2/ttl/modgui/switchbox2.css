@@ -3,10 +3,9 @@
         background-image:url(/resources/switchbox.png{{{ns}}});
         background-position:center center;
         background-repeat:no-repeat;
-        background-size:209px 274px;
         height:274px;
         position:relative;
-        width:220px;
+        width:209px;
     }
     .mod-switch-box .mod-drag-handle {
         bottom:0;
@@ -38,20 +37,18 @@
         font-size:18px;
     }
     .mod-switch-box-2 .mod-pedal-input {
-        top:124px;
-        left: -24px;
+        top:119px;
     }
     .mod-switch-box-2 .mod-pedal-output {
         top:50px;
-        right: -14px;
     }
     .mod-switch-box-2 .mod-pedal-output .mod-output {
-        margin-bottom: 109px;
+        margin-bottom: 92px;
     }
     .mod-switch-box .mod-control-group {
-        left:73px;
+        left:52px;
         position:absolute;
-        top:72px;
+        top:71px;
     }
     .mod-switch-box .mod-control-group .mod-knob .mod-knob-image {
         background-image:url(/resources/mod-switchbox-knob.png{{{ns}}});
