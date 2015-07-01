@@ -75,7 +75,7 @@ lv2:port
         a mod:Gui;
         mod:resourcesDirectory <modgui>;
         mod:iconTemplate <modgui/icon-highpassfilter.html>;
-        modgui:stylesheet <modgui/stylesheet-highpassfilter.css>;
+        mod:stylesheet <modgui/stylesheet-highpassfilter.css>;
         mod:templateData <modgui/data-highpassfilter.json>;
         mod:screenshot <modgui/screenshot-highpassfilter.png>;
         mod:thumbnail <modgui/thumb-highpassfilter.png>;
