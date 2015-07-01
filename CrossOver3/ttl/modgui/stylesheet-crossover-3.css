@@ -1,0 +1,115 @@
+
+.mod-crossover-3 {
+    border-radius: 0;
+}
+.mod-crossover-3 * {
+    color: white !important;
+}
+.mod-crossover-3 .mod-plugin-name , .mod-crossover-3 .mod-plugin-author  {
+    display: none;
+}
+.mod-crossover-3 .mod-control-group .mod-knob#Order {
+    position: absolute;
+    top: 121px;
+    width: 80px;
+    height: 80px;
+    left: 80px
+}
+.mod-crossover-3 .mod-control-group .mod-knob#Order .mod-knob-image {
+    background-image:url(/resources/3switch.png{{{ns}}}) !important;
+    background-repeat:no-repeat;
+    background-size:210px 70px;
+    height:50px;
+    margin:0 auto;
+    width:70px;
+    cursor: pointer;
+}
+.mod-crossover-3 .mod-knob-title {
+    position: relative !important;
+    padding-top: 20px;
+}
+.mod-crossover-3 {
+    background-image:url(/resources/crossover3x.png{{{ns}}}) !important;
+    background-size:281px 454px;
+    width: 281px;
+    height: 454px;
+}
+.mod-crossover-3 .mod-control-group {
+    top: 59px;
+}
+  .mod-crossover-3 #Freq_1 ,  .mod-crossover-3 #Freq_2 {
+    position: absolute;
+    width: 100px;
+    left: 0;
+}
+  .mod-crossover-3 #Freq_1 {
+    top: 15px;
+}
+  .mod-crossover-3 #Freq_2 {
+    top: 178px;
+}
+  .mod-crossover-3 #Gain_1,  .mod-crossover-3 #Gain_2,  .mod-crossover-3 #Gain_3 {
+    position: absolute;
+    right: -3px;
+}
+  .mod-crossover-3 #Gain_2 {
+    top: 117px;
+}
+  .mod-crossover-3 #Gain_3 {
+    top: 238px;
+}
+
+.mod-crossover-3 .mod-control-group .mod-knob .mod-knob-image {
+  background-image: url(/resources/knob.png{{{ns}}});
+  background-position:left center;
+  background-repeat:no-repeat;
+  background-size:auto 70px;
+  height:70px;
+  width:70px;
+  margin:0 auto;
+  cursor: pointer;
+  position:relative;
+  overflow:hidden;
+}
+.mod-crossover-3 .mod-light {
+    top: 325px;
+    margin-left: 4px;
+}
+.mod-crossover-3 .mod-footswitch {
+    background-image:url(/resources/footswitch.png{{{ns}}});
+    background-position:top center;
+    background-repeat:no-repeat;
+    background-size:auto 132px;
+    bottom: 20px;
+    cursor:pointer;
+    height:66px;
+    left: 12px !important;
+    position:absolute;
+}
+.mod-crossover-3 .mod-knob-value {
+    color: #84ff00 !important;
+    background: #222;
+    font-family: monospace;
+    text-align: right;
+    margin: 5px 0 3px 0;
+    border: 1px inset #555;
+    display: block;
+    height: 20px;
+    width: 100px;
+    overflow: hidden;
+}
+.mod-crossover-3 .mod-footswitch.on {
+    background-position:top center;
+}
+.mod-crossover-3 .mod-footswitch.off {
+    background-position:bottom center;
+}
+.mod-crossover-3 .mod-pedal-input {
+    top: 197px;
+}
+.mod-crossover-3 .mod-pedal-output {
+    top: 77px;
+}
+.mod-crossover-3 .mod-pedal-output>*  {
+    margin-bottom: 64px !important;
+}
