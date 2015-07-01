@@ -131,6 +131,7 @@ mod:gui [
     a mod:Gui;
     mod:resourcesDirectory <modgui>;
     mod:iconTemplate <modgui/icon-crossover-3.html>;
+    modgui:stylesheet <modgui/stylesheet-crossover-3.css>;
     mod:templateData <modgui/data-crossover-3.json>;
     mod:screenshot <modgui/screenshot-crossover-3.png>;
     mod:thumbnail <modgui/thumb-crossover-3.png>;

@@ -75,6 +75,7 @@ lv2:port
         a mod:Gui;
         mod:resourcesDirectory <modgui>;
         mod:iconTemplate <modgui/icon-lowpassfilter.html>;
+        modgui:stylesheet <modgui/stylesheet-lowpassfilter.css>;
         mod:templateData <modgui/data-lowpassfilter.json>;
         mod:screenshot <modgui/screenshot-lowpassfilter.png>;
         mod:thumbnail <modgui/thumb-lowpassfilter.png>;

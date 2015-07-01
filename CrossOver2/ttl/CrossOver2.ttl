@@ -104,6 +104,7 @@ mod:gui [
         a mod:Gui;
         mod:resourcesDirectory <modgui>;
         mod:iconTemplate <modgui/icon-crossover-2.html>;
+        modgui:stylesheet <modgui/stylesheet-crossover-2.css>;
         mod:templateData <modgui/data-crossover-2.json>;
         mod:screenshot <modgui/screenshot-crossover-2.png>;
         mod:thumbnail <modgui/thumb-crossover-2.png>;
