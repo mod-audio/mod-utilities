@@ -159,6 +159,9 @@
 
 /* STYLES FOR THE PLUGIN */
 
+.mod-crossover-2 {
+    border-radius: 0;
+}
 .mod-crossover-2 * {
     color: white !important;
 }
