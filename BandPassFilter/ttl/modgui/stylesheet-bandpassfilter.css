@@ -1,0 +1,106 @@
+
+    .mod-bandpassfilter {
+        border-radius: 0;
+    }
+    .mod-bandpassfilter * {
+        color: white !important;
+    }
+    .mod-bandpassfilter .mod-plugin-name , .mod-bandpassfilter .mod-plugin-author  {
+        display: none;
+    }
+    .mod-bandpassfilter .mod-control-group .mod-knob {
+        position: absolute;
+        text-align: center;
+        }
+    .mod-bandpassfilter .mod-control-group .mod-knob#Order {
+        position: absolute;
+        top: 0px;
+        width: 80px;
+        height: 80px;
+        left: 80px
+    }
+    .mod-bandpassfilter .mod-control-group .mod-knob#Freq {
+        top: 74px;
+        left: 3px;
+    }
+    .mod-bandpassfilter .mod-control-group .mod-knob#Q {
+        top: 74px;
+        right: 3px;
+    }
+    .mod-bandpassfilter .mod-control-group .mod-knob#Order .mod-knob-image {
+        background-image:url(/resources/3switch.png{{{ns}}}) !important;
+        background-repeat:no-repeat;
+        background-size:240px 80px;
+        height:60px;
+        margin:3px auto;
+        width:80px;
+        cursor: pointer;
+    }
+    .mod-bandpassfilter .mod-knob-title {
+        position: relative !important;
+        padding-top: 20px;
+    }
+    .mod-bandpassfilter {
+        background-image:url(/resources/back.png{{{ns}}}) !important;
+        background-size:281px 454px;
+        width: 281px;
+        height: 454px;
+    }
+    .mod-bandpassfilter .mod-control-group {
+        top: 49px;
+    }
+
+    .mod-bandpassfilter .mod-control-group .mod-knob .mod-knob-image {
+      background-image: url(/resources/knob.png{{{ns}}});
+      background-position:left center;
+      background-repeat:no-repeat;
+      background-size:auto 70px;
+      height:70px;
+      width:70px;
+      margin:0 auto 5px auto;
+      cursor: pointer;
+      position:relative;
+      overflow:hidden;
+    }
+    .mod-bandpassfilter .mod-light {
+        top: 172px;
+    }
+    .mod-bandpassfilter .mod-footswitch {
+        background-image:url(/resources/footswitch.png{{{ns}}});
+        background-position:top center;
+        background-repeat:no-repeat;
+        background-size:auto 132px;
+        bottom: 20px;
+        cursor:pointer;
+        height:66px;
+        width: 66px;
+        left: 120px !important;
+        position:absolute;
+    }
+    .mod-bandpassfilter .mod-knob-value {
+        color: #84ff00 !important;
+        background: #222;
+        font-family: monospace;
+        text-align: right;
+        margin: 5px 0 3px 0;
+        border: 1px inset #555;
+        display: block;
+        height: 20px;
+        width: 100px;
+        overflow: hidden;
+    }
+    .mod-bandpassfilter .mod-footswitch.on {
+        background-position:top center;
+    }
+    .mod-bandpassfilter .mod-footswitch.off {
+        background-position:bottom center;
+    }
+    .mod-bandpassfilter .mod-pedal-input {
+        top: 190px;
+    }
+    .mod-bandpassfilter .mod-pedal-output {
+        top: 190px;
+    }
+    .mod-bandpassfilter .mod-pedal-output>* {
+        margin-bottom: 75px !important;
+    }

@@ -92,6 +92,7 @@ modgui:gui [
     a modgui:Gui;
     modgui:resourcesDirectory <modgui>;
     modgui:iconTemplate <modgui/icon-bandpassfilter.html>;
+    modgui:stylesheet <modgui/stylesheet-bandpassfilter.css>;
     modgui:templateData <modgui/data-bandpassfilter.json>;
     modgui:screenshot <modgui/screenshot-bandpassfilter.png>;
     modgui:thumbnail <modgui/thumb-bandpassfilter.png>;
