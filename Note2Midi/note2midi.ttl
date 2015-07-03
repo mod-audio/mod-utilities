@@ -137,7 +137,6 @@ About pitch detection: http://aubio.org/manpages/latest/aubiopitch.1.html
         lv2:default -90;
     ];
     mod:gui [
-        a mod:Gui;
         mod:resourcesDirectory <modgui>;
         mod:iconTemplate <modgui/icon-note2midi.html>;
         mod:templateData <modgui/data-note2midi.json>;

@@ -113,7 +113,6 @@ lv2:port
     lv2:maximum 1;
 ];
 mod:gui [
-    a mod:Gui;
     mod:resourcesDirectory <modgui>;
     mod:iconTemplate <modgui/icon-switchtrigger4.html>;
     mod:screenshot <modgui/SwitchTrigger4.png>;

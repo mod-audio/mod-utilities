@@ -104,7 +104,6 @@ lv2:port
     lv2:maximum 1;
 ];
 mod:gui [
-    a mod:Gui;
     mod:resourcesDirectory <modgui>;
     mod:iconTemplate <modgui/icon-toggleswitch4.html>;
     mod:screenshot <modgui/ToggleSwitch4.png>;

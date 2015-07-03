@@ -54,7 +54,6 @@ lv2:port
     lv2:maximum 40;
 ];
 mod:gui [
-        a mod:Gui;
         mod:resourcesDirectory <modgui>;
         mod:iconTemplate <modgui/icon-gain.html>;
         mod:templateData <modgui/data-gain.json>;

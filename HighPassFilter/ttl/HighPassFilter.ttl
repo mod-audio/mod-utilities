@@ -72,7 +72,6 @@ lv2:port
     lv2:maximum 2;
 ];
     mod:gui [
-        a mod:Gui;
         mod:resourcesDirectory <modgui>;
         mod:iconTemplate <modgui/icon-highpassfilter.html>;
         mod:stylesheet <modgui/stylesheet-highpassfilter.css>;

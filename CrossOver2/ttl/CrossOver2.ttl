@@ -101,7 +101,6 @@ lv2:port
 ];
 
 mod:gui [
-        a mod:Gui;
         mod:resourcesDirectory <modgui>;
         mod:iconTemplate <modgui/icon-crossover-2.html>;
         mod:stylesheet <modgui/stylesheet-crossover-2.css>;

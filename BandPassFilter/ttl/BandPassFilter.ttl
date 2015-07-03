@@ -89,7 +89,6 @@ lv2:port
 ];
 
 modgui:gui [
-    a modgui:Gui;
     modgui:resourcesDirectory <modgui>;
     modgui:iconTemplate <modgui/icon-bandpassfilter.html>;
     modgui:stylesheet <modgui/stylesheet-bandpassfilter.css>;
