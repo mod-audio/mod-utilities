@@ -26,7 +26,7 @@ if [ "x${LV2_PATH}x" == "xx" ]; then
     LV2_PATH=~/.lv2/
 fi
 
-for i in BandPassFilter CrossOver2 CrossOver3 Gain Gain2x2 HighPassFilter LowPassFilter SwitchBox2 SwitchBox3 SwitchTrigger4 ToggleSwitch4; do
+for i in BandPassFilter CrossOver2 CrossOver3 Gain Gain2x2 HighPassFilter LowPassFilter SwitchBox2 SwitchTrigger4 ToggleSwitch4; do
     cd $i
     make
     make INSTALL_PATH=$LV2_PATH install

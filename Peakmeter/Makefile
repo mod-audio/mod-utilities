@@ -17,14 +17,13 @@ PLUGIN = $(shell echo $(DIR_NAME) | tr A-Z a-z).so
 
 # installation path
 INSTALL_PATH = /usr/local/lib/lv2
-COMPLETE_INSTALL_PATH = $(INSTALL_PATH)/$(NAME).lv2
+COMPLETE_INSTALL_PATH = $(DESTDIR)$(INSTALL_PATH)/$(NAME).lv2
 
 # compiler and linker
-CC = g++
-LD = g++
+CXX ?= g++
 
 # flags
-CFLAGS += -std=c++11 -c
+CXXFLAGS += -std=c++11 -c
 LDFLAGS += -shared -lm
 
 # libs
@@ -38,10 +37,10 @@ SRC = $(wildcard *.cpp)
 OBJ = $(SRC:.cpp=.o)
 
 $(PLUGIN): $(OBJ)
-	$(LD) $(LDFLAGS) $(OBJ) -o $(PLUGIN) $(LIBS)
+	$(CXX) $(LDFLAGS) $(OBJ) -o $(PLUGIN) $(LIBS)
 
 %.o: %.cpp
-	$(CC) $(CFLAGS) -o $@ $<
+	$(CXX) $(CXXFLAGS) -o $@ $<
 
 clean:
 	$(RM) *.o $(PLUGIN)

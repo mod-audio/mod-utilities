@@ -19,14 +19,13 @@ ifndef INSTALL_PATH
 	INSTALL_PATH = ~/.lv2
 endif
 
-COMPLETE_INSTALL_PATH = $(INSTALL_PATH)/$(NAME).lv2
+COMPLETE_INSTALL_PATH = $(DESTDIR)$(INSTALL_PATH)/$(NAME).lv2
 
 # compiler and linker
-CC = g++
-LD = g++
+CXX ?= g++
 
 # flags
-CFLAGS = -I. -I/usr/include/aubio -I/usr/lib/ -O2 -Wall -fPIC -DPIC -c $(DEBUG) -fpermissive
+CXXFLAGS = -I. -I/usr/include/aubio -I/usr/lib/ -O2 -Wall -fPIC -DPIC -c $(DEBUG) -fpermissive
 LDFLAGS = -shared -lc -lm -fPIC -DPIC -nostartfiles -Wl,--no-undefined
 
 # libs
@@ -42,11 +41,11 @@ SRC = $(wildcard *.cpp)
 OBJ = $(SRC:.cpp=.o)
 
 $(PLUGIN): $(OBJ)
-	# $(LD) $(OBJ) $(STATIC_LIBS) $(LDFLAGS) -o $(PLUGIN)
-	$(LD) $(OBJ) $(STATIC_LIBS) $(DYNAMIC_LIBS) $(LDFLAGS) -o $(PLUGIN)
+	# $(CXX) $(OBJ) $(STATIC_LIBS) $(LDFLAGS) -o $(PLUGIN)
+	$(CXX) $(OBJ) $(STATIC_LIBS) $(DYNAMIC_LIBS) $(LDFLAGS) -o $(PLUGIN)
 
 %.o: %.cpp
-	$(CC) $(CFLAGS) -o $@ $<
+	$(CXX) $(CXXFLAGS) -o $@ $<
 
 clean:
 	$(RM) *.o $(PLUGIN)
