@@ -23,7 +23,7 @@ doap:maintainer [
 ];
 
 mod:brand "MOD";
-mod:label "Gain";
+mod:label "Gain 2x2";
 
 doap:license "GPL";
 
