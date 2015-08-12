@@ -1,11 +1,10 @@
 
     .mod-switch-box {
         background-image:url(/resources/switchbox.png{{{ns}}});
-        background-position:center center;
         background-repeat:no-repeat;
         height:274px;
         position:relative;
-        width:209px;
+        width:200px;
     }
     .mod-switch-box .mod-drag-handle {
         bottom:0;
