@@ -115,6 +115,7 @@ lv2:port
 mod:gui [
     mod:resourcesDirectory <modgui>;
     mod:iconTemplate <modgui/icon-switchtrigger4.html>;
+    mod:stylesheet <modgui/stylesheet-switchtrigger4.css>;
     mod:screenshot <modgui/SwitchTrigger4.png>;
     mod:thumbnail <modgui/SwitchTrigger4-thumb.png>;
-] .
+].
