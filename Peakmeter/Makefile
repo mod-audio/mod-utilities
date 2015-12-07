@@ -23,7 +23,7 @@ COMPLETE_INSTALL_PATH = $(DESTDIR)$(INSTALL_PATH)/$(NAME).lv2
 CXX ?= g++
 
 # flags
-CXXFLAGS += -std=c++11 -c
+CXXFLAGS += -std=c++11 -fPIC -c
 LDFLAGS += -shared -lm
 
 # libs

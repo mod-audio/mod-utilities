@@ -1,4 +1,18 @@
-EFFECTS_DIR = $(shell ls -d */ | sed 's/\///')
+EFFECTS_DIR = \
+BandPassFilter \
+CrossOver2 \
+CrossOver3 \
+Gain \
+Gain2x2 \
+HighPassFilter \
+LowPassFilter \
+SwitchBox2 \
+SwitchTrigger4 \
+ToggleSwitch4
+
+# Note2Midi
+# Peakmeter
+
 INSTALL_PATH = /usr/local/lib/lv2
 
 all:
