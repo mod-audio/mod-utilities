@@ -8,7 +8,8 @@ HighPassFilter \
 LowPassFilter \
 SwitchBox2 \
 SwitchTrigger4 \
-ToggleSwitch4
+ToggleSwitch4 \
+LoopSwitch4
 
 # Note2Midi
 # Peakmeter
