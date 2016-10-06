@@ -38,7 +38,8 @@ public:
     float *loop2;
     float *loop3;
     float *loop4;
-    //int *globalmask;
+
+    int globalmask;
 };
 
 /**********************************************************************************************************************************************************/
@@ -162,11 +163,11 @@ void LoopSwitch::run(LV2_Handle instance, uint32_t n_samples)
     bool loop3  = *plugin-> loop3 >0.5f;
     bool loop4  = *plugin-> loop4 >0.5f;
 
-    //int globalmask = *plugin-> globalmask;
-    //int mask = (loop1 << 3) + (loop2 << 2) + (loop3 << 1) + loop4;
+    int globalmask = plugin-> globalmask;
+    int mask = (loop1 << 3) + (loop2 << 2) + (loop3 << 1) + loop4;
 
-    //if (globalmask == mask)
-    //{
+    if (globalmask == mask)
+    {
 	    for (uint32_t i=0; i < n_samples; i++)
 		{
 			snd1[i] = loop1*in[i];
@@ -175,22 +176,22 @@ void LoopSwitch::run(LV2_Handle instance, uint32_t n_samples)
 	    	snd4[i] = (loop3*loop4*ret3[i]) + (loop2*!loop3*loop4*ret2[i]) + (loop1*!loop2*!loop3*loop4*ret1[i]) + (!loop1*!loop2*!loop3*loop4*in[i]);
 	        out[i]  = (loop4*ret4[i]) + (loop3*!loop4*ret3[i]) + (loop2*!loop3*!loop4*ret2[i]) + (loop1*!loop2*!loop3*!loop4*ret1[i]) + (!loop1*!loop2*!loop3*!loop4*in[i]);
 		}
-	//}
-	//else
-	//{
-		// //useprevmask but send to right ports already
-		// //test with case 1000 (loop 1 on)
-		// for (uint32_t i=0; i < n_samples; i++)
-		// {
-		// 	snd1[i] = in[i];
-	 //        snd2[i] = 0; 
-	 //   		snd3[i] = 0;
-	 //    	snd4[i] = 0;
-	 //        out[i] = in[i];
-		// }
-		// //update globalmask
-		// globalmask = mask;
-	//}
+	}
+	else
+	{
+		//useprevmask but send to right ports already
+		//test with case 1000 (loop 1 on)
+		for (uint32_t i=0; i < n_samples; i++)
+		{
+			snd1[i] = in[i];
+	        snd2[i] = 0; 
+	   		snd3[i] = 0;
+	    	snd4[i] = 0;
+	        out[i] = in[i];
+		}
+		//update globalmask
+		globalmask = mask;
+	}
 }
 
 /**********************************************************************************************************************************************************/
