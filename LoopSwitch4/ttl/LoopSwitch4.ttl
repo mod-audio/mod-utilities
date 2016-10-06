@@ -133,3 +133,4 @@ lv2:port
     lv2:minimum 0;
     lv2:maximum 1;
 ];
+.
