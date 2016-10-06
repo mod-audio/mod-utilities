@@ -37,6 +37,7 @@ public:
     float *loop2;
     float *loop3;
     float *loop4;
+    int *globalmask;
 };
 
 /**********************************************************************************************************************************************************/
@@ -160,171 +161,190 @@ void LoopSwitch::run(LV2_Handle instance, uint32_t n_samples)
     bool loop3  = *plugin-> loop3 >0.5f;
     bool loop4  = *plugin-> loop4 >0.5f;
 
+    int globalmask = *plugin-> globalmask;
     int mask = (loop1 << 3) + (loop2 << 2) + (loop3 << 1) + loop4;
 
-    switch (mask)
+    if (globalmask == mask)
     {
-        case 0: //0000
-            for(uint32_t i = 0; i < n_samples; i++)
-            {
-            	snd1[i] = 0;
-    			snd2[i] = 0; 
-   			 	snd3[i] = 0;
-    			snd4[i] = 0;
-                out[i] = in[i];
-            }
-            break;
-        case 1: //0001
-            for(uint32_t i = 0; i < n_samples; i++)
-            {
-            	snd1[i] = 0;
-			    snd2[i] = 0; 
-			    snd3[i] = 0;
-                snd4[i] = in[i];
-                out[i] = ret4[i];
-            }
-            break;
-        case 2: //0010
-            for(uint32_t i = 0; i < n_samples; i++)
-            {
-            	snd1[i] = 0;
-			    snd2[i] = 0;    
-                snd3[i] = in[i];
-                snd4[i] = 0;
-                out[i] = ret3[i];
-            }
-            break;
-        case 3: //0011
-            for(uint32_t i = 0; i < n_samples; i++)
-            {
-            	snd1[i] = 0;
-    			snd2[i] = 0; 
-                snd3[i] = in[i];
-                snd4[i] = ret3[i];
-                out[i] = ret4[i];
-            }
-            break;
-        case 4: //0100
-            for(uint32_t i = 0; i < n_samples; i++)
-            {
-            	snd1[i] = 0; 
-            	snd2[i] = in[i];
-   			 	snd3[i] = 0;
-    			snd4[i] = 0;
-                out[i] = ret2[i];
-            }
-            break;
-        case 5: //0101
-            for(uint32_t i = 0; i < n_samples; i++)
-            {
-            	snd1[i] = 0;
-                snd2[i] = in[i];
-                snd3[i] = 0;
-                snd4[i] = ret2[i];
-                out[i] = ret4[i];
-            }
-            break;
-        case 6: //0110
-            for(uint32_t i = 0; i < n_samples; i++)
-            {
-            	snd1[i] = 0; 
-                snd2[i] = in[i];
-                snd3[i] = ret2[i];
-                snd4[i] = 0;
-                out[i] = ret3[i];
-            }
-            break;
-        case 7: //0111
-            for(uint32_t i = 0; i < n_samples; i++)
-            {
-            	snd1[i] = 0;
-                snd2[i] = in[i];
-                snd3[i] = ret2[i];
-                snd4[i] = ret3[i];
-                out[i] = ret4[i];
-            }
-            break;
-        case 8: //1000
-            for(uint32_t i = 0; i < n_samples; i++)
-            {
-                snd1[i] = in[i];
-                snd2[i] = 0; 
-   			 	snd3[i] = 0;
-    			snd4[i] = 0;
-                out[i] = ret1[i];
-            }
-            break;
-        case 9: //1001
-            for(uint32_t i = 0; i < n_samples; i++)
-            {
-                snd1[i] = in[i];
-                snd2[i] = 0; 
-   			 	snd3[i] = 0;
-                snd4[i] = ret1[i];
-                out[i] = ret4[i];
-            }
-            break;
-        case 10: //1010
-            for(uint32_t i = 0; i < n_samples; i++)
-            {
-                snd1[i] = in[i];
-                snd2[i] = 0; 
-                snd3[i] = ret1[i];
-                snd4[i] = 0;
-                out[i] = ret3[i];
-            }
-            break;
-        case 11: //1011
-            for(uint32_t i = 0; i < n_samples; i++)
-            {
-                snd1[i] = in[i];
-                snd2[i] = 0; 
-                snd3[i] = ret1[i];
-                snd4[i] = ret3[i];
-                out[i] = ret4[i];
-            }
-            break;
-        case 12: //1100
-            for(uint32_t i = 0; i < n_samples; i++)
-            {
-                snd1[i] = in[i];
-                snd2[i] = ret1[i];
-                snd3[i] = 0;
-    			snd4[i] = 0;
-                out[i] = ret2[i];
-            }
-            break;
-        case 13: //1101
-            for(uint32_t i = 0; i < n_samples; i++)
-            {
-                snd1[i] = in[i];
-                snd2[i] = ret1[i];
-                snd3[i] = 0;
-                snd4[i] = ret2[i];
-                out[i] = ret4[i];
-            }
-            break;
-        case 14: //1110
-            for(uint32_t i = 0; i < n_samples; i++)
-            {
-                snd1[i] = in[i];
-                snd2[i] = ret1[i];
-                snd3[i] = ret2[i];
-                snd4[i] = 0;
-                out[i] = ret3[i];
-            }
-            break;
-        case 15: //1111
-            for(uint32_t i = 0; i < n_samples; i++)
-            {
-                snd1[i] = in[i];
-                snd2[i] = ret1[i];
-                snd3[i] = ret2[i];
-                snd4[i] = ret3[i];
-                out[i] = ret4[i];
-            }
-            break;
-    }
+	    switch (mask)
+	    {
+	        case 0: //0000
+	            for(uint32_t i = 0; i < n_samples; i++)
+	            {
+	            	snd1[i] = 0;
+	    			snd2[i] = 0; 
+	   			 	snd3[i] = 0;
+	    			snd4[i] = 0;
+	                out[i] = in[i];
+	            }
+	            break;
+	        case 1: //0001
+	            for(uint32_t i = 0; i < n_samples; i++)
+	            {
+	            	snd1[i] = 0;
+				    snd2[i] = 0; 
+				    snd3[i] = 0;
+	                snd4[i] = in[i];
+	                out[i] = ret4[i];
+	            }
+	            break;
+	        case 2: //0010
+	            for(uint32_t i = 0; i < n_samples; i++)
+	            {
+	            	snd1[i] = 0;
+				    snd2[i] = 0;    
+	                snd3[i] = in[i];
+	                snd4[i] = 0;
+	                out[i] = ret3[i];
+	            }
+	            break;
+	        case 3: //0011
+	            for(uint32_t i = 0; i < n_samples; i++)
+	            {
+	            	snd1[i] = 0;
+	    			snd2[i] = 0; 
+	                snd3[i] = in[i];
+	                snd4[i] = ret3[i];
+	                out[i] = ret4[i];
+	            }
+	            break;
+	        case 4: //0100
+	            for(uint32_t i = 0; i < n_samples; i++)
+	            {
+	            	snd1[i] = 0; 
+	            	snd2[i] = in[i];
+	   			 	snd3[i] = 0;
+	    			snd4[i] = 0;
+	                out[i] = ret2[i];
+	            }
+	            break;
+	        case 5: //0101
+	            for(uint32_t i = 0; i < n_samples; i++)
+	            {
+	            	snd1[i] = 0;
+	                snd2[i] = in[i];
+	                snd3[i] = 0;
+	                snd4[i] = ret2[i];
+	                out[i] = ret4[i];
+	            }
+	            break;
+	        case 6: //0110
+	            for(uint32_t i = 0; i < n_samples; i++)
+	            {
+	            	snd1[i] = 0; 
+	                snd2[i] = in[i];
+	                snd3[i] = ret2[i];
+	                snd4[i] = 0;
+	                out[i] = ret3[i];
+	            }
+	            break;
+	        case 7: //0111
+	            for(uint32_t i = 0; i < n_samples; i++)
+	            {
+	            	snd1[i] = 0;
+	                snd2[i] = in[i];
+	                snd3[i] = ret2[i];
+	                snd4[i] = ret3[i];
+	                out[i] = ret4[i];
+	            }
+	            break;
+	        case 8: //1000
+	            for(uint32_t i = 0; i < n_samples; i++)
+	            {
+	                snd1[i] = in[i];
+	                snd2[i] = 0; 
+	   			 	snd3[i] = 0;
+	    			snd4[i] = 0;
+	                out[i] = ret1[i];
+	            }
+	            break;
+	        case 9: //1001
+	            for(uint32_t i = 0; i < n_samples; i++)
+	            {
+	                snd1[i] = in[i];
+	                snd2[i] = 0; 
+	   			 	snd3[i] = 0;
+	                snd4[i] = ret1[i];
+	                out[i] = ret4[i];
+	            }
+	            break;
+	        case 10: //1010
+	            for(uint32_t i = 0; i < n_samples; i++)
+	            {
+	                snd1[i] = in[i];
+	                snd2[i] = 0; 
+	                snd3[i] = ret1[i];
+	                snd4[i] = 0;
+	                out[i] = ret3[i];
+	            }
+	            break;
+	        case 11: //1011
+	            for(uint32_t i = 0; i < n_samples; i++)
+	            {
+	                snd1[i] = in[i];
+	                snd2[i] = 0; 
+	                snd3[i] = ret1[i];
+	                snd4[i] = ret3[i];
+	                out[i] = ret4[i];
+	            }
+	            break;
+	        case 12: //1100
+	            for(uint32_t i = 0; i < n_samples; i++)
+	            {
+	                snd1[i] = in[i];
+	                snd2[i] = ret1[i];
+	                snd3[i] = 0;
+	    			snd4[i] = 0;
+	                out[i] = ret2[i];
+	            }
+	            break;
+	        case 13: //1101
+	            for(uint32_t i = 0; i < n_samples; i++)
+	            {
+	                snd1[i] = in[i];
+	                snd2[i] = ret1[i];
+	                snd3[i] = 0;
+	                snd4[i] = ret2[i];
+	                out[i] = ret4[i];
+	            }
+	            break;
+	        case 14: //1110
+	            for(uint32_t i = 0; i < n_samples; i++)
+	            {
+	                snd1[i] = in[i];
+	                snd2[i] = ret1[i];
+	                snd3[i] = ret2[i];
+	                snd4[i] = 0;
+	                out[i] = ret3[i];
+	            }
+	            break;
+	        case 15: //1111
+	            for(uint32_t i = 0; i < n_samples; i++)
+	            {
+	                snd1[i] = in[i];
+	                snd2[i] = ret1[i];
+	                snd3[i] = ret2[i];
+	                snd4[i] = ret3[i];
+	                out[i] = ret4[i];
+	            }
+	            break;
+	    }
+	}
+	else
+	{
+		//useprevmask but send to right ports already
+		//test with case 1000 (loop 1 on)
+		for (uint32_t i=0; i < n_samples; i++)
+		{
+			snd1[i] = in[i];
+	        snd2[i] = 0; 
+	   		snd3[i] = 0;
+	    	snd4[i] = 0;
+	        out[i] = in[i];
+		}
+		//update globalmask
+		globalmask = mask;
+	}
 }
 
 /**********************************************************************************************************************************************************/
