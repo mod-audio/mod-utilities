@@ -190,7 +190,7 @@ void LoopSwitch::run(LV2_Handle instance, uint32_t n_samples)
 	        out[i] = in[i];
 		}
 		//update globalmask
-		globalmask = mask;
+		plugin-> globalmask = mask;
 	}
 }
 
