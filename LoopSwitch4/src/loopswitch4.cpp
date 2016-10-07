@@ -7,7 +7,7 @@
 /**********************************************************************************************************************************************************/
 
 #define PLUGIN_URI "http://moddevices.com/plugins/mod-devel/LoopSwitch4"
-enum {IN, RET1, RET2, RET3, RET4, OUT, SND1, SND2, SND3, SND4, LOOP1, LOOP2, LOOP3, LOOP4, PARALLEL34};
+enum {IN, RET1, RET2, RET3, RET4, OUT, SND1, SND2, SND3, SND4, LOOP1, LOOP2, LOOP3, LOOP4, PARALLEL34, GSEND1, GSEND2, GSEND3, GSEND4, GOUT};
 #define N_LOOPS 4
 
 /**********************************************************************************************************************************************************/
@@ -39,6 +39,11 @@ public:
     float *loop3;
     float *loop4;
     float *parallel34;
+    float *gsend1;
+    float *gsend2;
+    float *gsend3;
+    float *gsend4;
+    float *gout;
 };
 
 /**********************************************************************************************************************************************************/
@@ -139,6 +144,21 @@ void LoopSwitch::connect_port(LV2_Handle instance, uint32_t port, void *data)
         case PARALLEL34:
         	plugin->parallel34 = (float*) data;
         	break;
+        case GSEND1:
+        	plugin->gsend1 = (float*) data;
+        	break;
+        case GSEND2:
+        	plugin->gsend2 = (float*) data;
+        	break;
+        case GSEND3:
+        	plugin->gsend3 = (float*) data;
+        	break;
+        case GSEND4:
+        	plugin->gsend4 = (float*) data;
+        	break;
+        case GOUT:
+        	plugin->gout = (float*) data;
+        	break;
     }
 }
 
@@ -154,6 +174,7 @@ void LoopSwitch::run(LV2_Handle instance, uint32_t n_samples)
     float *ret2 = plugin-> ret2;
     float *ret3 = plugin-> ret3;
     float *ret4 = plugin-> ret4;
+
     float *out  = plugin-> out;
     float *snd1 = plugin-> snd1;
     float *snd2 = plugin-> snd2;
@@ -167,6 +188,13 @@ void LoopSwitch::run(LV2_Handle instance, uint32_t n_samples)
 
     bool parallel34 = *plugin-> parallel34 >0.5f;
 
+    float gsend1 = *plugin-> gsend1;
+    float gsend2 = *plugin-> gsend2;
+    float gsend3 = *plugin-> gsend3;
+    float gsend4 = *plugin-> gsend4;
+    float gout = *plugin-> gout;
+
+
     if (parallel34) //loop 3 and 4 are parallel
     {
     	bool multp[N_LOOPS + 1][N_LOOPS + 1] = {
@@ -179,11 +207,11 @@ void LoopSwitch::run(LV2_Handle instance, uint32_t n_samples)
 
 		for (uint32_t i=0; i < n_samples; i++)
 		{
-			snd1[i] = (multp[0][0]*in[i]);
-	        snd2[i] = (multp[1][0]*ret1[i]) + (multp[1][1]*in[i]);
-	   		snd3[i] = (multp[2][0]*ret2[i]) + (multp[2][1]*ret1[i]) + (multp[2][2]*in[i]);
-	    	snd4[i] = (multp[3][0]*ret2[i]) + (multp[3][1]*ret1[i]) + (multp[3][2]*in[i]);
-	        out[i]  = (multp[4][0]*ret4[i]) + (multp[4][1]*ret3[i]) + (multp[4][2]*ret2[i]) + (multp[4][3]*ret1[i]) + (multp[4][4]*in[i]);
+			snd1[i] = gsend1*((multp[0][0]*in[i]));
+	        snd2[i] = gsend2*((multp[1][0]*ret1[i]) + (multp[1][1]*in[i]));
+	   		snd3[i] = gsend3*((multp[2][0]*ret2[i]) + (multp[2][1]*ret1[i]) + (multp[2][2]*in[i]));
+	    	snd4[i] = gsend4*((multp[3][0]*ret2[i]) + (multp[3][1]*ret1[i]) + (multp[3][2]*in[i]));
+	        out[i]  = gout*((multp[4][0]*ret4[i]) + (multp[4][1]*ret3[i]) + (multp[4][2]*ret2[i]) + (multp[4][3]*ret1[i]) + (multp[4][4]*in[i]));
 		}
     }
 
@@ -199,11 +227,11 @@ void LoopSwitch::run(LV2_Handle instance, uint32_t n_samples)
 
 		for (uint32_t i=0; i < n_samples; i++)
 		{
-			snd1[i] = (mults[0][0]*in[i]);
-	        snd2[i] = (mults[1][0]*ret1[i]) + (mults[1][1]*in[i]);
-	   		snd3[i] = (mults[2][0]*ret2[i]) + (mults[2][1]*ret1[i]) + (mults[2][2]*in[i]);
-	    	snd4[i] = (mults[3][0]*ret3[i]) + (mults[3][1]*ret2[i]) + (mults[3][2]*ret1[i]) + (mults[3][3]*in[i]);
-	        out[i]  = (mults[4][0]*ret4[i]) + (mults[4][1]*ret3[i]) + (mults[4][2]*ret2[i]) + (mults[4][3]*ret1[i]) + (mults[4][4]*in[i]);
+			snd1[i] = gsend1*((mults[0][0]*in[i]));
+	        snd2[i] = gsend2*((mults[1][0]*ret1[i]) + (mults[1][1]*in[i]));
+	   		snd3[i] = gsend3*((mults[2][0]*ret2[i]) + (mults[2][1]*ret1[i]) + (mults[2][2]*in[i]));
+	    	snd4[i] = gsend4*((mults[3][0]*ret3[i]) + (mults[3][1]*ret2[i]) + (mults[3][2]*ret1[i]) + (mults[3][3]*in[i]));
+	        out[i]  = gout*((mults[4][0]*ret4[i]) + (mults[4][1]*ret3[i]) + (mults[4][2]*ret2[i]) + (mults[4][3]*ret1[i]) + (mults[4][4]*in[i]));
 		}
 	}
 	
