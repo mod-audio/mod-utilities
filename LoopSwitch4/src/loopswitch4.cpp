@@ -7,7 +7,7 @@
 /**********************************************************************************************************************************************************/
 
 #define PLUGIN_URI "http://moddevices.com/plugins/mod-devel/LoopSwitch4"
-enum {IN, RET1, RET2, RET3, RET4, OUT, SND1, SND2, SND3, SND4, LOOP1, LOOP2, LOOP3, LOOP4};
+enum {IN, RET1, RET2, RET3, RET4, OUT, SND1, SND2, SND3, SND4, LOOP1, LOOP2, LOOP3, LOOP4, PARALLEL34};
 #define N_LOOPS 4
 
 /**********************************************************************************************************************************************************/
@@ -38,6 +38,7 @@ public:
     float *loop2;
     float *loop3;
     float *loop4;
+    float *parallel34;
 };
 
 /**********************************************************************************************************************************************************/
@@ -135,6 +136,9 @@ void LoopSwitch::connect_port(LV2_Handle instance, uint32_t port, void *data)
         case LOOP4:
             plugin->loop4 = (float*) data;
             break;
+        case PARALLEL34:
+        	plugin->parallel34 = (float*) data;
+        	break;
     }
 }
 
@@ -161,21 +165,46 @@ void LoopSwitch::run(LV2_Handle instance, uint32_t n_samples)
     bool loop3  = *plugin-> loop3 >0.5f;
     bool loop4  = *plugin-> loop4 >0.5f;
 
-	bool mults[N_LOOPS + 1][N_LOOPS + 1] = {
-		{loop1} ,
-		{loop1*loop2, !loop1*loop2} ,
-		{loop2*loop3, loop1*!loop2*loop3, !loop1*!loop2*loop3} ,
-		{loop3*loop4, loop2*!loop3*loop4, loop1*!loop2*!loop3*loop4, !loop1*!loop2*!loop3*loop4} ,
-		{loop4, loop3*!loop4, loop2*!loop3*!loop4, loop1*!loop2*!loop3*!loop4, !loop1*!loop2*!loop3*!loop4}
-	};    
+    bool parallel34 = *plugin-> parallel34 >0.5f;
 
-	for (uint32_t i=0; i < n_samples; i++)
-	{
-		snd1[i] = (mults[0][0]*in[i]);
-        snd2[i] = (mults[1][0]*ret1[i]) + (mults[1][1]*in[i]);
-   		snd3[i] = (mults[2][0]*ret2[i]) + (mults[2][1]*ret1[i]) + (mults[2][2]*in[i]);
-    	snd4[i] = (mults[3][0]*ret3[i]) + (mults[3][1]*ret2[i]) + (mults[3][2]*ret1[i]) + (mults[3][3]*in[i]);
-        out[i]  = (mults[4][0]*ret4[i]) + (mults[4][1]*ret3[i]) + (mults[4][2]*ret2[i]) + (mults[4][3]*ret1[i]) + (mults[4][4]*in[i]);
+    if (parallel34) //loop 3 and 4 are parallel
+    {
+    	bool multp[N_LOOPS + 1][N_LOOPS + 1] = {
+			{loop1} ,
+			{loop1*loop2, !loop1*loop2} ,
+			{loop2*loop3, loop1*!loop2*loop3, !loop1*!loop2*loop3} ,
+			{loop2*loop4, loop1*!loop2*loop4, !loop1*!loop2*loop4} ,
+			{loop4, loop3, loop2*!loop3*!loop4, loop1*!loop2*!loop3*!loop4, !loop1*!loop2*!loop3*!loop4}
+		};   
+
+		for (uint32_t i=0; i < n_samples; i++)
+		{
+			snd1[i] = (multp[0][0]*in[i]);
+	        snd2[i] = (multp[1][0]*ret1[i]) + (multp[1][1]*in[i]);
+	   		snd3[i] = (multp[2][0]*ret2[i]) + (multp[2][1]*ret1[i]) + (multp[2][2]*in[i]);
+	    	snd4[i] = (multp[3][0]*ret2[i]) + (multp[3][1]*ret1[i]) + (multp[3][2]*in[i]);
+	        out[i]  = (multp[4][0]*ret4[i]) + (multp[4][1]*ret3[i]) + (multp[4][2]*ret2[i]) + (multp[4][3]*ret1[i]) + (multp[4][4]*in[i]);
+		}
+    }
+
+    else //if all serial
+    {
+		bool mults[N_LOOPS + 1][N_LOOPS + 1] = {
+			{loop1} ,
+			{loop1*loop2, !loop1*loop2} ,
+			{loop2*loop3, loop1*!loop2*loop3, !loop1*!loop2*loop3} ,
+			{loop3*loop4, loop2*!loop3*loop4, loop1*!loop2*!loop3*loop4, !loop1*!loop2*!loop3*loop4} ,
+			{loop4, loop3*!loop4, loop2*!loop3*!loop4, loop1*!loop2*!loop3*!loop4, !loop1*!loop2*!loop3*!loop4}
+		};    
+
+		for (uint32_t i=0; i < n_samples; i++)
+		{
+			snd1[i] = (mults[0][0]*in[i]);
+	        snd2[i] = (mults[1][0]*ret1[i]) + (mults[1][1]*in[i]);
+	   		snd3[i] = (mults[2][0]*ret2[i]) + (mults[2][1]*ret1[i]) + (mults[2][2]*in[i]);
+	    	snd4[i] = (mults[3][0]*ret3[i]) + (mults[3][1]*ret2[i]) + (mults[3][2]*ret1[i]) + (mults[3][3]*in[i]);
+	        out[i]  = (mults[4][0]*ret4[i]) + (mults[4][1]*ret3[i]) + (mults[4][2]*ret2[i]) + (mults[4][3]*ret1[i]) + (mults[4][4]*in[i]);
+		}
 	}
 	
 }
