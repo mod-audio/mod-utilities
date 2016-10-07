@@ -38,8 +38,6 @@ public:
     float *loop2;
     float *loop3;
     float *loop4;
-
-    int globalmask;
 };
 
 /**********************************************************************************************************************************************************/
@@ -163,35 +161,23 @@ void LoopSwitch::run(LV2_Handle instance, uint32_t n_samples)
     bool loop3  = *plugin-> loop3 >0.5f;
     bool loop4  = *plugin-> loop4 >0.5f;
 
-    int globalmask = plugin-> globalmask;
-    int mask = (loop1 << 3) + (loop2 << 2) + (loop3 << 1) + loop4;
+	bool mults[N_LOOPS + 1][N_LOOPS + 1] = {
+		{loop1} ,
+		{loop1*loop2, !loop1*loop2} ,
+		{loop2*loop3, loop1*!loop2*loop3, !loop1*!loop2*loop3} ,
+		{loop3*loop4, loop2*!loop3*loop4, loop1*!loop2*!loop3*loop4, !loop1*!loop2*!loop3*loop4} ,
+		{loop4, loop3*!loop4, loop2*!loop3*!loop4, loop1*!loop2*!loop3*!loop4, !loop1*!loop2*!loop3*!loop4}
+	};    
 
-    if (globalmask == mask)
-    {
-	    for (uint32_t i=0; i < n_samples; i++)
-		{
-			snd1[i] = loop1*in[i];
-	        snd2[i] = (loop1*loop2*ret1[i]) + (!loop1*loop2*in[i]);
-	   		snd3[i] = (loop2*loop3*ret2[i]) + (loop1*!loop2*loop3*ret1[i]) + (!loop1*!loop2*loop3*in[i]);
-	    	snd4[i] = (loop3*loop4*ret3[i]) + (loop2*!loop3*loop4*ret2[i]) + (loop1*!loop2*!loop3*loop4*ret1[i]) + (!loop1*!loop2*!loop3*loop4*in[i]);
-	        out[i]  = (loop4*ret4[i]) + (loop3*!loop4*ret3[i]) + (loop2*!loop3*!loop4*ret2[i]) + (loop1*!loop2*!loop3*!loop4*ret1[i]) + (!loop1*!loop2*!loop3*!loop4*in[i]);
-		}
-	}
-	else
+	for (uint32_t i=0; i < n_samples; i++)
 	{
-		//useprevmask but send to right ports already
-		//test with case 1000 (loop 1 on)
-		for (uint32_t i=0; i < n_samples; i++)
-		{
-			snd1[i] = in[i];
-	        snd2[i] = 0; 
-	   		snd3[i] = 0;
-	    	snd4[i] = 0;
-	        out[i] = in[i];
-		}
-		//update globalmask
-		plugin-> globalmask = mask;
+		snd1[i] = (mults[0][0]*in[i]);
+        snd2[i] = (mults[1][0]*ret1[i]) + (mults[1][1]*in[i]);
+   		snd3[i] = (mults[2][0]*ret2[i]) + (mults[2][1]*ret1[i]) + (mults[2][2]*in[i]);
+    	snd4[i] = (mults[3][0]*ret3[i]) + (mults[3][1]*ret2[i]) + (mults[3][2]*ret1[i]) + (mults[3][3]*in[i]);
+        out[i]  = (mults[4][0]*ret4[i]) + (mults[4][1]*ret3[i]) + (mults[4][2]*ret2[i]) + (mults[4][3]*ret1[i]) + (mults[4][4]*in[i]);
 	}
+	
 }
 
 /**********************************************************************************************************************************************************/
