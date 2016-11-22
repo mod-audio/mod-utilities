@@ -9,8 +9,8 @@ COMPLETE_INSTALL_PATH = $(DESTDIR)$(INSTALL_PATH)/$(NAME).lv2
 CXX ?= g++
 
 # flags
-CXXFLAGS += -I. -c -ffast-math -fPIC -DPIC -Wall
-LDFLAGS += -shared -lm
+CXXFLAGS += -I. -c -ffast-math -fPIC -DPIC -Wall $(shell pkg-config --cflags alsa)
+LDFLAGS += -shared -lm -Wl,--no-undefined $(shell pkg-config --libs alsa)
 
 # libs
 LIBS =
