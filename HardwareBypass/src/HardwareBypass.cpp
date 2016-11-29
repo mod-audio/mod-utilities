@@ -133,7 +133,7 @@ void HardwareBypassPlugin::connect_port(LV2_Handle instance, uint32_t port, void
 
 static void set_alsa_state(const AlsaControls& alsa, const bool enabled, const int mode)
 {
-    int left, right;
+    int left = 0, right = 0;
 
     if (enabled)
     {
@@ -145,18 +145,11 @@ static void set_alsa_state(const AlsaControls& alsa, const bool enabled, const i
             break;
         case 1:
             left = 1;
-            right = 0;
             break;
         case 2:
-            left = 0;
             right = 1;
             break;
         }
-    }
-    else
-    {
-        left = 0;
-        right = 0;
     }
 
     snd_mixer_selem_set_playback_switch_all(alsa.left, left);
