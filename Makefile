@@ -13,6 +13,10 @@ ToggleSwitch4
 # Note2Midi
 # Peakmeter
 
+ifeq ($(MOD),1)
+EFFECTS_DIR += HardwareBypass
+endif
+
 INSTALL_PATH = /usr/local/lib/lv2
 
 all:
