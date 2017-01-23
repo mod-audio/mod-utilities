@@ -26,7 +26,7 @@ OBJ = $(SRC:.cpp=.o)
 PLUGIN = $(NAME).so
 
 $(PLUGIN): $(OBJ)
-	$(CXX) $(LDFLAGS) $(OBJ) -o $(PLUGIN) $(LIBS)
+	$(CXX) $(OBJ) -o $(PLUGIN) $(LIBS) $(LDFLAGS)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $<
