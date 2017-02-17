@@ -105,12 +105,12 @@ void GainControl::run(LV2_Handle instance, uint32_t n_samples)
 {
     GainControl *plugin;
     plugin = (GainControl *) instance;
-    double g_before = plugin->g;
-    plugin->g = pow(10, (float)(*(plugin->gain))/20.0);
+    float g_before = plugin->g;
+    plugin->g = powf(10.0f, (*plugin->gain)/20.0f);
 
-    for (uint32_t i=1; i<=n_samples; i++)
+    for (uint32_t i=0; i<n_samples; i++)
 	{
-		plugin->out_1[i-1] = (g_before + ((plugin->g - g_before)/(n_samples - 1))*(i-1) )*(float)plugin->in[i-1];
+		plugin->out_1[i] = (g_before + ((plugin->g - g_before)/n_samples) * i) * plugin->in[i];
 	}
 
 }
