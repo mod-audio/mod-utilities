@@ -12,6 +12,11 @@ CXX ?= g++
 CXXFLAGS += -I. -c -ffast-math -fPIC -DPIC -Wall
 LDFLAGS += -shared -lm
 
+ifeq ($(MOD),1)
+CXXFLAGS += USE_NE10
+LDFLAGS += -lNE10
+endif
+
 # libs
 LIBS =
 

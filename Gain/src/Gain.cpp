@@ -1,8 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <float.h>
 #include <math.h>
 #include <lv2.h>
+
+#ifdef USE_NE10
+#include <NE10.h>
+#endif
 
 /**********************************************************************************************************************************************************/
 
@@ -18,12 +23,9 @@ public:
     GainControl() {}
     ~GainControl() {}
     static LV2_Handle instantiate(const LV2_Descriptor* descriptor, double samplerate, const char* bundle_path, const LV2_Feature* const* features);
-    static void activate(LV2_Handle instance);
-    static void deactivate(LV2_Handle instance);
     static void connect_port(LV2_Handle instance, uint32_t port, void *data);
     static void run(LV2_Handle instance, uint32_t n_samples);
     static void cleanup(LV2_Handle instance);
-    static const void* extension_data(const char* uri);
     float *in;
     float *out_1;
     float *gain;
@@ -37,11 +39,11 @@ static const LV2_Descriptor Descriptor = {
     PLUGIN_URI,
     GainControl::instantiate,
     GainControl::connect_port,
-    GainControl::activate,
+    NULL,
     GainControl::run,
-    GainControl::deactivate,
+    NULL,
     GainControl::cleanup,
-    GainControl::extension_data
+    NULL
 };
 
 /**********************************************************************************************************************************************************/
@@ -59,23 +61,10 @@ LV2_Handle GainControl::instantiate(const LV2_Descriptor* descriptor, double sam
 {
     GainControl *plugin = new GainControl();
 
-    plugin->g = 1;
+    // default gain value is 3.0f
+    plugin->g = powf(10.0f, 3.0f/20.0f);
 
     return (LV2_Handle)plugin;
-}
-
-/**********************************************************************************************************************************************************/
-
-void GainControl::activate(LV2_Handle instance)
-{
-    // TODO: include the activate function code here
-}
-
-/**********************************************************************************************************************************************************/
-
-void GainControl::deactivate(LV2_Handle instance)
-{
-    // TODO: include the deactivate function code here
 }
 
 /**********************************************************************************************************************************************************/
@@ -103,16 +92,27 @@ void GainControl::connect_port(LV2_Handle instance, uint32_t port, void *data)
 
 void GainControl::run(LV2_Handle instance, uint32_t n_samples)
 {
-    GainControl *plugin;
-    plugin = (GainControl *) instance;
-    float g_before = plugin->g;
+    GainControl *plugin = (GainControl *) instance;
+
+    const float g_before = plugin->g;
     plugin->g = powf(10.0f, (*plugin->gain)/20.0f);
 
-    for (uint32_t i=0; i<n_samples; i++)
-	{
-		plugin->out_1[i] = (g_before + ((plugin->g - g_before)/n_samples) * i) * plugin->in[i];
-	}
+    if (fabsf(g_before - plugin->g) < FLT_EPSILON)
+    {
+#ifdef USE_NE10
+        ne10_mulc_float_neon(plugin->out_1, plugin->in, g_before, n_samples);
+#else
+        for (uint32_t i=0; i<n_samples; i++)
+            plugin->out_1[i] = g_before * plugin->in[i];
+#endif
+    }
+    else
+    {
+        const float g2 = ((plugin->g - g_before)/n_samples);
 
+        for (uint32_t i=0; i<n_samples; i++)
+            plugin->out_1[i] = (g_before + g2 * i ) * plugin->in[i];
+    }
 }
 
 /**********************************************************************************************************************************************************/
@@ -120,11 +120,4 @@ void GainControl::run(LV2_Handle instance, uint32_t n_samples)
 void GainControl::cleanup(LV2_Handle instance)
 {
     delete ((GainControl *) instance);
-}
-
-/**********************************************************************************************************************************************************/
-
-const void* GainControl::extension_data(const char* uri)
-{
-    return NULL;
 }
