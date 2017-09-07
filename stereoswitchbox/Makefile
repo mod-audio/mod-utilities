@@ -1,10 +1,11 @@
 #!/usr/bin/make -f
 # Makefile for stereoswitchbox.lv2 #
-# ----------------------------- #
+# -------------------------------- #
 # Created by falkTX
+# Edited by Jarno
 #
 
-include Makefile.mk
+include ../Shared_files/Makefile.mk
 
 # --------------------------------------------------------------
 

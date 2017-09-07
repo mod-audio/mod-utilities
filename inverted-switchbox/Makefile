@@ -2,9 +2,10 @@
 # Makefile for inverted-switchbox.lv2 #
 # ----------------------------------- #
 # Created by falkTX
-# Eddited by Jarno
+# Edited by Jarno
+#
 
-include Makefile.mk
+include ../Shared_files/Makefile.mk
 
 # --------------------------------------------------------------
 
