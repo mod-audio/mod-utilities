@@ -1,0 +1,22 @@
+@prefix modgui: <http://moddevices.com/ns/modgui#> .
+@prefix lv2:    <http://lv2plug.in/ns/lv2core#> .
+
+<http://moddevices.com/plugins/mod-devel/inverted-Switchbox>
+    modgui:gui [
+        modgui:resourcesDirectory <modgui> ;
+        modgui:iconTemplate <modgui/icon-inverted-switchbox.html> ;
+        modgui:stylesheet <modgui/stylesheet-inverted-switchbox.css> ;
+        modgui:screenshot <modgui/screenshot-inverted-switchbox.png> ;
+        modgui:thumbnail <modgui/thumbnail-inverted-switchbox.png> ;
+        modgui:brand "MOD" ;
+        modgui:label "Inverted Switchbox" ;
+        modgui:model "boxy" ;
+        modgui:panel "1-knob" ;
+        modgui:color "black" ;
+        modgui:knob "gold" ;
+        modgui:port [
+            lv2:index 0 ;
+            lv2:symbol "Switch" ;
+            lv2:name "Channel" ;
+        ] ;
+    ] .
