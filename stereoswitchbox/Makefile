@@ -7,39 +7,39 @@
 
 include ../Shared_files/Makefile.mk
 
-# --------------------------------------------------------------
+NAME = stereoswitchbox
 
-PREFIX  ?= /usr/local
-DESTDIR ?=
+# --------------------------------------------------------------
+# Installation path
+
+INSTALL_PATH = /usr/local/lib/lv2
+COMPLETE_INSTALL_PATH = $(DESTDIR)$(INSTALL_PATH)/$(NAME).lv2
 
 # --------------------------------------------------------------
 # Default target is to build all plugins
 
 all: build
-build: stereoswitchbox-build
+build: $(NAME)-build
 
 # --------------------------------------------------------------
-# stereoswitchbox build rules
+# Build rules
 
-stereoswitchbox-build: stereoswitchbox.lv2/stereoswitchbox$(LIB_EXT) stereoswitchbox.lv2/manifest.ttl
+$(NAME)-build: $(NAME).lv2/$(NAME)$(LIB_EXT)
 
-stereoswitchbox.lv2/stereoswitchbox$(LIB_EXT): stereoswitchbox.c
+$(NAME).lv2/$(NAME)$(LIB_EXT): $(NAME).c
 	$(CC) $^ $(BUILD_C_FLAGS) $(LINK_FLAGS) -lm $(SHARED) -o $@
-
-stereoswitchbox.lv2/manifest.ttl: stereoswitchbox.lv2/manifest.ttl
-	sed -e "s|@LIB_EXT@|$(LIB_EXT)|" $< > $@
 
 # --------------------------------------------------------------
 
 clean:
-	rm -f stereoswitchbox.lv2/stereoswitchbox$(LIB_EXT) stereoswitchbox.lv2/manifest.ttl
+	rm -f $(NAME).lv2/$(NAME)$(LIB_EXT)
 
 # --------------------------------------------------------------
 
 install: build
-	install -d $(DESTDIR)$(PREFIX)/lib/lv2/stereoswitchbox.lv2
+	install -d $(DESTDIR)$(PREFIX)/lib/lv2/$(NAME).lv2
 
-	install -m 644 stereoswitchbox.lv2/*.so  $(DESTDIR)$(PREFIX)/lib/lv2/stereoswitchbox.lv2/
-	install -m 644 stereoswitchbox.lv2/*.ttl $(DESTDIR)$(PREFIX)/lib/lv2/stereoswitchbox.lv2/
+	install -m 644 $(NAME).lv2/*.so  $(DESTDIR)$(PREFIX)/lib/lv2/$(NAME).lv2/
+	install -m 644 $(NAME).lv2/*.ttl $(DESTDIR)$(PREFIX)/lib/lv2/$(NAME).lv2/
 
 # --------------------------------------------------------------
