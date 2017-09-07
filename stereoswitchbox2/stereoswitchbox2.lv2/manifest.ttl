@@ -4,5 +4,4 @@
 <http://moddevices.com/plugins/mod-devel/StereoSwitchBox3> 
 	a lv2:Plugin ;
     lv2:binary <stereoswitchbox2.so> ;
-    rdfs:seeAlso <stereoswitchbox2.ttl> .
-<http://moddevices.com/plugins/mod-devel/StereoSwitchBox3> rdfs:seeAlso <modgui.ttl> .
+    rdfs:seeAlso <stereoswitchbox2.ttl> , <modgui.ttl> .
