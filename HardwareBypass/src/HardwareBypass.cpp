@@ -4,7 +4,11 @@
 
 /**********************************************************************************************************************************************************/
 
-#define ALSA_SOUNDCARD_ID         "hw:MODDUO"
+#ifdef __aarch64__
+ #define ALSA_SOUNDCARD_ID        "hw:DUOX"
+#else
+ #define ALSA_SOUNDCARD_ID        "hw:MODDUO"
+#endif
 #define ALSA_CONTROL_BYPASS_LEFT  "Left True-Bypass"
 #define ALSA_CONTROL_BYPASS_RIGHT "Right True-Bypass"
 
