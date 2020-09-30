@@ -1,13 +1,13 @@
 #!/usr/bin/make -f
-# Makefile for inverted-switchbox.lv2 #
-# ----------------------------------- #
+# Makefile for stereoswitchbox2.lv2 #
+# --------------------------------- #
 # Created by falkTX
 # Edited by Jarno
 #
 
 include ../Shared_files/Makefile.mk
 
-NAME = inverted-switchbox
+NAME = SwitchBox2
 
 # --------------------------------------------------------------
 # Installation path
