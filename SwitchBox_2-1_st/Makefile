@@ -7,7 +7,7 @@
 
 include ../Shared_files/Makefile.mk
 
-NAME = stereoswitchbox
+NAME = switchbox_2-1_st
 
 # --------------------------------------------------------------
 # Installation path

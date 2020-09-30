@@ -1,15 +1,15 @@
 @prefix modgui: <http://moddevices.com/ns/modgui#> .
 @prefix lv2:    <http://lv2plug.in/ns/lv2core#> .
 
-<http://moddevices.com/plugins/mod-devel/StereoSwitchBox3>
+<http://moddevices.com/plugins/mod-devel/switchbox_2-1_st>
     modgui:gui [
         modgui:resourcesDirectory <modgui> ;
-        modgui:iconTemplate <modgui/icon-stereoswitchbox2.html> ;
-        modgui:stylesheet <modgui/stylesheet-stereoswitchbox2.css> ;
-        modgui:screenshot <modgui/screenshot-stereoswitchbox2.png> ;
-        modgui:thumbnail <modgui/thumbnail-stereoswitchbox2.png> ;
+        modgui:iconTemplate <modgui/icon-stereoswitchbox.html> ;
+        modgui:stylesheet <modgui/stylesheet-stereoswitchbox.css> ;
+        modgui:screenshot <modgui/screenshot-stereoswitchbox.png> ;
+        modgui:thumbnail <modgui/thumbnail-stereoswitchbox.png> ;
         modgui:brand "MOD" ;
-        modgui:label "Stereoswitchbox2" ;
+        modgui:label "stereoswitchbox" ;
         modgui:model "boxy" ;
         modgui:panel "1-knob" ;
         modgui:color "black" ;
