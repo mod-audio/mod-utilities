@@ -10,8 +10,8 @@ SwitchBox2 \
 SwitchTrigger4 \
 ToggleSwitch4 \
 inverted-switchbox \
-stereoswitchbox \
-stereoswitchbox2
+SwitchBox_2-1_st \
+SwitchBox_1-2_st
 
 # Note2Midi
 # Peakmeter
