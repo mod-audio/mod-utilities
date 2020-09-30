@@ -7,18 +7,29 @@
 /**********************************************************************************************************************************************************/
 
 #define PLUGIN_URI "http://moddevices.com/plugins/mod-devel/StereoSwitchBox3"
-typedef enum {INL, INR, OUT_1L, OUT_1R, OUT_2L, OUT_2R, CHANNEL}PortIndex;
+typedef enum {
+	IN_L = 0,
+	IN_R,
+	OUT_1L,
+	OUT_1R,
+	OUT_2L,
+	OUT_2R,
+	CHANNEL
+}PortIndex;
 
 /**********************************************************************************************************************************************************/
 
 typedef struct{
-    float *inL;
-	float *inR;
-    float *out_1L;
-    float *out_1R;
+	float *in_L;
+	float *in_R;
+	float *out_1L;
+	float *out_1R;
 	float *out_2L;
-    float *out_2R;
-    float *channel;
+	float *out_2R;
+	float *channel;
+
+	float time_rate;
+	float gain;
 } Switchbox;
 /**********************************************************************************************************************************************************/
 static LV2_Handle
@@ -27,38 +38,43 @@ double                              samplerate,
 const char*                         bundle_path,
 const LV2_Feature* const* features)
 {
-    Switchbox* switchbox = (Switchbox*)malloc(sizeof(Switchbox));
-    return (LV2_Handle)switchbox;
+	Switchbox* switchbox = (Switchbox*)malloc(sizeof(Switchbox));
+
+	float seconds  = 0.01;
+	switchbox->time_rate = 1.0 / seconds / (float)samplerate;
+	switchbox->gain = 1.0;
+
+	return (LV2_Handle)switchbox;
 }
 /**********************************************************************************************************************************************************/
 static void connect_port(LV2_Handle instance, uint32_t port, void *data)
 {
-    Switchbox* switchbox = (Switchbox*)instance;
+	Switchbox* switchbox = (Switchbox*)instance;
 
-    switch ((PortIndex)port)
-    {
-        case INL:
-            switchbox->inL = (float*) data;
-            break;
-		case INR:
-			switchbox->inR = (float*) data;
+	switch ((PortIndex)port)
+	{
+		case IN_L:
+			switchbox->in_L = (float*) data;
 			break;
-        case OUT_1L:
-            switchbox->out_1L = (float*) data;
-            break;
+		case IN_R:
+			switchbox->in_R = (float*) data;
+			break;
+		case OUT_1L:
+			switchbox->out_1L = (float*) data;
+			break;
 		case OUT_1R:
-            switchbox->out_1R = (float*) data;
-            break;
-        case OUT_2L:
-            switchbox->out_2L = (float*) data;
-            break;
+			switchbox->out_1R = (float*) data;
+			break;
+		case OUT_2L:
+			switchbox->out_2L = (float*) data;
+			break;
 		case OUT_2R:
-            switchbox->out_2R = (float*) data;
-            break;
-        case CHANNEL:
-            switchbox->channel = (float*) data;
-            break;
-    }
+			switchbox->out_2R = (float*) data;
+			break;
+		case CHANNEL:
+			switchbox->channel = (float*) data;
+			break;
+	}
 }
 /**********************************************************************************************************************************************************/
 void activate(LV2_Handle instance)
@@ -69,59 +85,35 @@ void activate(LV2_Handle instance)
 /**********************************************************************************************************************************************************/
 void run(LV2_Handle instance, uint32_t n_samples)
 {
-    const Switchbox* switchbox = (const Switchbox*)instance;    
+	Switchbox* switchbox = (Switchbox*)instance;
 
-    int canal;
-    canal = (int)(*(switchbox->channel));
-    float *inL = switchbox->inL;
-	float *inR = switchbox->inR;
-    float *out_1L = switchbox->out_1L;
+	float *in_L = switchbox->in_L;
+	float *in_R = switchbox->in_R;
+	float *out_1L = switchbox->out_1L;
 	float *out_1R = switchbox->out_1R;
-    float *out_2L = switchbox->out_2L;
+	float *out_2L = switchbox->out_2L;
 	float *out_2R = switchbox->out_2R;
 
- switch (canal) {
-  default:
-   case 0:
-    for ( uint32_t i = 0; i < n_samples; i++)
-{
-    *out_1L = *inL;
-	*out_1R = *inR;
-    *out_2L=0;
-	*out_2R=0;
-    inL++;
-	inR++;
-    out_1L++;
-	out_1R++;
-    out_2L++;
-	out_2R++;
-}
 
+	for ( uint32_t i = 0; i < n_samples; i++)
+	{
 
+		switch ((int)(*switchbox->channel)) {
+			case 0:
+				switchbox->gain = (switchbox->gain < 1.0) ? switchbox->gain + switchbox->time_rate : 1.0;
+				break;
+			case 1:
+				switchbox->gain = (switchbox->gain > 0.0) ? switchbox->gain - switchbox->time_rate : 0.0;
+				break;
+		}
 
-  break;
+		float inv_gain = (switchbox->gain * -1) + 1;
 
-  case 1:
-
-    for (uint32_t i = 0; i < n_samples; i++)
-{
-    *out_2L = *inL;
-	*out_2R = *inR;
-    *out_1L=0;
-	*out_1R=0;
-    inL++;
-	inR++;
-    out_1L++;
-	out_1R++;
-    out_2L++;
-	out_2R++;
-}
-
-
-break;
-
-  }
-
+		out_1L[i] = (in_L[i] * switchbox->gain);
+		out_1R[i] = (in_R[i] * switchbox->gain);
+		out_2L[i] = (in_L[i] * inv_gain);
+		out_2R[i] = (in_R[i] * inv_gain);
+	}
 }
 
 /**********************************************************************************************************************************************************/

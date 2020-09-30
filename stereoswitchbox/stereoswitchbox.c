@@ -7,7 +7,15 @@
 /**********************************************************************************************************************************************************/
 
 #define PLUGIN_URI "http://moddevices.com/plugins/mod-devel/StereoSwitchBox2"
-typedef enum {IN_1L, IN_1R, IN_2L, IN_2R, OUTL, OUTR, CHANNEL}PortIndex;
+typedef enum {
+	IN_1L = 0,
+	IN_1R,
+	IN_2L,
+	IN_2R,
+	OUT_L,
+	OUT_R,
+	CHANNEL
+}PortIndex;
 
 /**********************************************************************************************************************************************************/
 
@@ -16,9 +24,13 @@ typedef struct{
 	float *in_1R;
     float *in_2L;
     float *in_2R;
-	float *outL;
-    float *outR;
+	float *out_L;
+    float *out_R;
     float *channel;
+
+	float time_rate;
+	float gain;
+
 } Switchbox;
 /**********************************************************************************************************************************************************/
 static LV2_Handle
@@ -27,38 +39,43 @@ double                              samplerate,
 const char*                         bundle_path,
 const LV2_Feature* const* features)
 {
-    Switchbox* switchbox = (Switchbox*)malloc(sizeof(Switchbox));
-    return (LV2_Handle)switchbox;
+	Switchbox* switchbox = (Switchbox*)malloc(sizeof(Switchbox));
+
+	float seconds  = 0.01;
+	switchbox->time_rate = 1.0 / seconds / (float)samplerate;
+	switchbox->gain = 1.0;
+
+	return (LV2_Handle)switchbox;
 }
 /**********************************************************************************************************************************************************/
 static void connect_port(LV2_Handle instance, uint32_t port, void *data)
 {
-    Switchbox* switchbox = (Switchbox*)instance;
+	Switchbox* switchbox = (Switchbox*)instance;
 
-    switch ((PortIndex)port)
-    {
-        case IN_1L:
-            switchbox->in_1L = (float*) data;
-            break;
+	switch ((PortIndex)port)
+	{
+		case IN_1L:
+			switchbox->in_1L = (float*) data;
+			break;
 		case IN_1R:
 			switchbox->in_1R = (float*) data;
 			break;
-        case IN_2L:
-            switchbox->in_2L = (float*) data;
-            break;
+		case IN_2L:
+			switchbox->in_2L = (float*) data;
+			break;
 		case IN_2R:
-            switchbox->in_2R = (float*) data;
-            break;
-        case OUTL:
-            switchbox->outL = (float*) data;
-            break;
-		case OUTR:
-            switchbox->outR = (float*) data;
-            break;
-        case CHANNEL:
-            switchbox->channel = (float*) data;
-            break;
-    }
+			switchbox->in_2R = (float*) data;
+			break;
+		case OUT_L:
+			switchbox->out_L = (float*) data;
+			break;
+		case OUT_R:
+			switchbox->out_R = (float*) data;
+			break;
+		case CHANNEL:
+			switchbox->channel = (float*) data;
+			break;
+	}
 }
 /**********************************************************************************************************************************************************/
 void activate(LV2_Handle instance)
@@ -69,59 +86,32 @@ void activate(LV2_Handle instance)
 /**********************************************************************************************************************************************************/
 void run(LV2_Handle instance, uint32_t n_samples)
 {
-    const Switchbox* switchbox = (const Switchbox*)instance;    
+	Switchbox* switchbox = (Switchbox*)instance;
 
-    int canal;
-    canal = (int)(*(switchbox->channel));
-    float *in_1L = switchbox->in_1L;
+	float *in_1L = switchbox->in_1L;
 	float *in_1R = switchbox->in_1R;
-    float *in_2L = switchbox->in_2L;
+	float *in_2L = switchbox->in_2L;
 	float *in_2R = switchbox->in_2R;
-    float *outL = switchbox->outL;
-	float *outR = switchbox->outR;
+	float *out_L = switchbox->out_L;
+	float *out_R = switchbox->out_R;
 
- switch (canal) {
-  default:
-   case 0:
-    for ( uint32_t i = 0; i < n_samples; i++)
-{
-    *outL = *in_1L;
-	*outR = *in_1R;
-    *in_2L=0;
-	*in_2R=0;
-    in_1L++;
-	in_1R++;
-    in_2L++;
-	in_2R++;
-    outL++;
-	outR++;
-}
+	for ( uint32_t i = 0; i < n_samples; i++)
+	{
 
+		switch ((int)(*switchbox->channel)) {
+			case 0:
+				switchbox->gain = (switchbox->gain < 1.0) ? switchbox->gain + switchbox->time_rate : 1.0;
+				break;
+			case 1:
+				switchbox->gain = (switchbox->gain > 0.0) ? switchbox->gain - switchbox->time_rate : 0.0;
+				break;
+		}
 
+		float inv_gain = (switchbox->gain * -1) + 1;
 
-  break;
-
-  case 1:
-
-    for (uint32_t i = 0; i < n_samples; i++)
-{
-    *outL = *in_2L;
-	*outR = *in_2R;
-    *in_1L=0;
-	*in_1R=0;
-    in_1L++;
-	in_1R++;
-    in_2L++;
-	in_2R++;
-    outL++;
-	outR++;
-}
-
-
-break;
-
-  }
-
+		out_L[i] = (in_1L[i] * switchbox->gain) + (in_2L[i] * inv_gain);
+		out_R[i] = (in_1R[i] * switchbox->gain) + (in_2R[i] * inv_gain);
+	}
 }
 
 /**********************************************************************************************************************************************************/
