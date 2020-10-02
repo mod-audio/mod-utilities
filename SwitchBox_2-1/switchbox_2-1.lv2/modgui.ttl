@@ -1,13 +1,13 @@
 @prefix modgui: <http://moddevices.com/ns/modgui#> .
 @prefix lv2:    <http://lv2plug.in/ns/lv2core#> .
 
-<http://moddevices.com/plugins/mod-devel/inverted-Switchbox>
+<http://moddevices.com/plugins/mod-devel/switchbox_2-1>
     modgui:gui [
         modgui:resourcesDirectory <modgui> ;
-        modgui:iconTemplate <modgui/icon-inverted-switchbox.html> ;
-        modgui:stylesheet <modgui/stylesheet-inverted-switchbox.css> ;
-        modgui:screenshot <modgui/screenshot-inverted-switchbox.png> ;
-        modgui:thumbnail <modgui/thumbnail-inverted-switchbox.png> ;
+        modgui:iconTemplate <modgui/icon-switchbox_2-1.html> ;
+        modgui:stylesheet <modgui/stylesheet-switchbox_2-1.css> ;
+        modgui:screenshot <modgui/screenshot-switchbox_2-1.png> ;
+        modgui:thumbnail <modgui/thumbnail-switchbox_2-1.png> ;
         modgui:brand "MOD" ;
         modgui:label "Inverted Switchbox" ;
         modgui:model "boxy" ;

@@ -7,7 +7,7 @@
 
 include ../Shared_files/Makefile.mk
 
-NAME = inverted-switchbox
+NAME = switchbox_2-1
 
 # --------------------------------------------------------------
 # Installation path
