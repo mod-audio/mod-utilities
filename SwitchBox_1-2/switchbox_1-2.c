@@ -6,7 +6,7 @@
 
 /**********************************************************************************************************************************************************/
 
-#define PLUGIN_URI "http://moddevices.com/plugins/mod-devel/switchbox_1-2"
+#define PLUGIN_URI "http://moddevices.com/plugins/mod-devel/SwitchBox2"
 typedef enum {
 	IN = 0,
 	OUT_1,

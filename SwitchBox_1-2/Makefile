@@ -7,7 +7,7 @@
 
 include ../Shared_files/Makefile.mk
 
-NAME = SwitchBox2
+NAME = switchbox_1-2
 
 # --------------------------------------------------------------
 # Installation path
