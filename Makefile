@@ -6,10 +6,10 @@ Gain \
 Gain2x2 \
 HighPassFilter \
 LowPassFilter \
-SwitchBox2 \
 SwitchTrigger4 \
 ToggleSwitch4 \
-inverted-switchbox \
+SwitchBox_1-2 \
+SwitchBox_2-1 \
 SwitchBox_2-1_st \
 SwitchBox_1-2_st
 
