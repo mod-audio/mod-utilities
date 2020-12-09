@@ -6,15 +6,15 @@
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 
-<http://moddevices.com/plugins/mod-devel/inverted-Switchbox>
+<http://moddevices.com/plugins/mod-devel/switchbox_2-1>
 a lv2:Plugin, lv2:UtilityPlugin;
 
-doap:name "Inverted-Switchbox";
+doap:name "Switchbox 2-1";
 
 doap:developer [
-    foaf:name "Jarno Verheesen";
+    foaf:name "Jarno Verheesen & Bram Giesen";
     foaf:homepage <>;
-    foaf:mbox <mailto:j.verheesen@hotmail.nl>;
+    foaf:mbox <mailto:bram@moddevices.com>;
     ];
 
 doap:maintainer [
