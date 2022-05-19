@@ -14,7 +14,7 @@
 #define PLUGIN_URI "http://moddevices.com/plugins/mod-devel/SwitchTrigger4"
 #define CHANNEL_URI "http://moddevices.com/plugins/mod-devel/SwitchTrigger4#channel"
 
-enum {IN, OUT_1, OUT_2, OUT_3, OUT_4, CHANNEL1, CHANNEL2, CHANNEL3, CHANNEL4};
+enum {IN, OUT_1, OUT_2, OUT_3, OUT_4, CHANNEL1, CHANNEL2, CHANNEL3, CHANNEL4, CHANNEL_OUTPUT};
 
 /**********************************************************************************************************************************************************/
 
@@ -45,6 +45,7 @@ public:
     float *channel2;
     float *channel3;
     float *channel4;
+    float *channel_output;
     int channel;
 
     LV2_URID_Map *urid_map;
@@ -154,6 +155,9 @@ void SwitchTrigger::connect_port(LV2_Handle instance, uint32_t port, void *data)
         case CHANNEL4:
             plugin->channel4 = (float*) data;
             break;
+        case CHANNEL_OUTPUT:
+            plugin->channel_output = (float*) data;
+            break;
     }
 }
 
@@ -221,8 +225,9 @@ void SwitchTrigger::run(LV2_Handle instance, uint32_t n_samples)
         memset(out_2, 0, sizeof(float)*n_samples);
         memset(out_3, 0, sizeof(float)*n_samples);
 	    break;
-
 	}
+
+    plugin->channel_output = (float*)&channel;
 }
 
 /**********************************************************************************************************************************************************/
