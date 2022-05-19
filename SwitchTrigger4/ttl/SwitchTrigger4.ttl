@@ -5,6 +5,17 @@
 @prefix mod: <http://moddevices.com/ns/modgui#>.
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix atom:   <http://lv2plug.in/ns/ext/atom#> .
+@prefix urid:   <http://lv2plug.in/ns/ext/urid#> .
+@prefix patch:  <http://lv2plug.in/ns/ext/patch#> .
+@prefix state:  <http://lv2plug.in/ns/ext/state#> .
+@prefix units:  <http://lv2plug.in/ns/extensions/units#> .
+@prefix plug:   <http://moddevices.com/plugins/mod-devel/SwitchTrigger4#> .
+
+plug:channel
+    a lv2:Parameter ;
+    rdfs:label "channel" ;
+    rdfs:range atom:Int .
 
 <http://moddevices.com/plugins/mod-devel/SwitchTrigger4>
 a lv2:Plugin, lv2:UtilityPlugin;
@@ -31,6 +42,10 @@ control.
 The switch trigger was designed to use the MOD on stage. By addressing each control to a
 footswitch, the musician can quickly access a desired chain of effects.
 """;
+
+lv2:requiredFeature urid:map ;
+lv2:optionalFeature state:loadDefaultState ;
+lv2:extensionData state:interface ;
 
 doap:license <GPL>;
 
@@ -112,6 +127,10 @@ lv2:port
     lv2:minimum 0;
     lv2:maximum 1;
 ];
+
+patch:writable plug:channel ;
+patch:state plug:channel ;
+
 mod:gui [
     mod:resourcesDirectory <modgui>;
     mod:iconTemplate <modgui/icon-switchtrigger4.html>;

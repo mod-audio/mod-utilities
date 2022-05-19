@@ -1,15 +1,25 @@
-#include <stdlib.h>
+ #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+
 #include <lv2.h>
+#include<lv2/lv2plug.in/ns/ext/urid/urid.h>
+#include<lv2/lv2plug.in/ns/ext/atom/util.h>
+#include<lv2/lv2plug.in/ns/ext/atom/atom.h>
+#include<lv2/lv2plug.in/ns/ext/state/state.h>
 
 /**********************************************************************************************************************************************************/
 
 #define PLUGIN_URI "http://moddevices.com/plugins/mod-devel/SwitchTrigger4"
+#define CHANNEL_URI "http://moddevices.com/plugins/mod-devel/SwitchTrigger4#channel>"
+
 enum {IN, OUT_1, OUT_2, OUT_3, OUT_4, CHANNEL1, CHANNEL2, CHANNEL3, CHANNEL4};
 
 /**********************************************************************************************************************************************************/
+
+static LV2_State_Status channel_save(LV2_Handle handle, LV2_State_Store_Function store, LV2_State_Handle state_handle, uint32_t flags, const LV2_Feature* const* features);
+static LV2_State_Status channel_restore(LV2_Handle handle, LV2_State_Retrieve_Function retrieve, LV2_State_Handle state_handle, uint32_t flags, const LV2_Feature* const* features);
 
 class SwitchTrigger
 {
@@ -34,6 +44,15 @@ public:
     float *channel3;
     float *channel4;
     int channel;
+
+    LV2_URID_Map *urid_map;
+
+    struct urids
+    {
+        LV2_URID    atom_Path;
+        LV2_URID    switch_channel;
+    } URIDs;
+
 };
 
 /**********************************************************************************************************************************************************/
@@ -51,6 +70,40 @@ static const LV2_Descriptor Descriptor = {
 
 /**********************************************************************************************************************************************************/
 
+static LV2_State_Status channel_save(LV2_Handle handle, LV2_State_Store_Function store, LV2_State_Handle state_handle,
+        uint32_t flags, const LV2_Feature* const* features)
+{
+    SwitchTrigger *plugin = (SwitchTrigger*)handle;
+
+    void *body = &plugin->channel;
+    store(state_handle, plugin->URIDs.switch_channel, body, sizeof(int),
+           plugin->URIDs.atom_Path, LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE);
+
+    return LV2_STATE_SUCCESS;
+}
+
+/**********************************************************************************************************************************************************/
+
+static LV2_State_Status channel_restore(LV2_Handle handle, LV2_State_Retrieve_Function retrieve, LV2_State_Handle state_handle,
+        uint32_t flags, const LV2_Feature* const* features)
+{
+    SwitchTrigger *plugin = (SwitchTrigger*)handle;
+
+    size_t   size;
+    uint32_t type;
+    uint32_t valflags;
+
+    const void* value = retrieve( state_handle, plugin->URIDs.switch_channel, &size, &type, &valflags);
+
+    if (value)
+    {
+        plugin->channel = *((int*)(&value));
+    }
+
+    return LV2_STATE_SUCCESS;
+}
+/**********************************************************************************************************************************************************/
+
 LV2_SYMBOL_EXPORT
 const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {
@@ -63,6 +116,20 @@ const LV2_Descriptor* lv2_descriptor(uint32_t index)
 LV2_Handle SwitchTrigger::instantiate(const LV2_Descriptor* descriptor, double samplerate, const char* bundle_path, const LV2_Feature* const* features)
 {
     SwitchTrigger *plugin = new SwitchTrigger();
+
+    for(int i=0; features[i]; i++)
+    {
+        if(!strcmp(features[i]->URI,LV2_URID__map))
+        {
+            plugin->urid_map = (LV2_URID_Map *) features[i]->data;
+            if(plugin->urid_map)
+            {
+                plugin->URIDs.atom_Path = plugin->urid_map->map(plugin->urid_map->handle,LV2_ATOM__Path);
+                plugin->URIDs.switch_channel = plugin->urid_map->map(plugin->urid_map->handle,CHANNEL_URI);
+            }
+        }
+    }
+
     return (LV2_Handle)plugin;
 }
 
@@ -230,5 +297,12 @@ void SwitchTrigger::cleanup(LV2_Handle instance)
 
 const void* SwitchTrigger::extension_data(const char* uri)
 {
+    static const LV2_State_Interface state = { channel_save, channel_restore };
+
+    if (!strcmp(uri, LV2_STATE__interface))
+    {
+        return &state;
+    }
+
     return NULL;
 }
