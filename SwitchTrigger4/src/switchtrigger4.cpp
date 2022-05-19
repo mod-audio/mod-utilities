@@ -51,7 +51,7 @@ public:
 
     struct urids
     {
-        LV2_URID    atom_Path;
+        LV2_URID    atom_Int;
         LV2_URID    switch_channel;
     } URIDs;
 
@@ -92,7 +92,7 @@ LV2_Handle SwitchTrigger::instantiate(const LV2_Descriptor* descriptor, double s
             plugin->urid_map = (LV2_URID_Map *) features[i]->data;
             if(plugin->urid_map)
             {
-                plugin->URIDs.atom_Path = plugin->urid_map->map(plugin->urid_map->handle,LV2_ATOM__Path);
+                plugin->URIDs.atom_Int = plugin->urid_map->map(plugin->urid_map->handle,LV2_ATOM__Int);
                 plugin->URIDs.switch_channel = plugin->urid_map->map(plugin->urid_map->handle,CHANNEL_URI);
                 break;
             }
@@ -271,7 +271,7 @@ LV2_State_Status SwitchTrigger::channel_save(LV2_Handle handle, LV2_State_Store_
 
     void *body = &plugin->channel;
     store(state_handle, plugin->URIDs.switch_channel, body, sizeof(int),
-           plugin->URIDs.atom_Path, LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE);
+           plugin->URIDs.atom_Int, LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE);
 
     return LV2_STATE_SUCCESS;
 }
@@ -289,7 +289,7 @@ LV2_State_Status SwitchTrigger::channel_restore(LV2_Handle handle, LV2_State_Ret
 
     const void* value = retrieve( state_handle, plugin->URIDs.switch_channel, &size, &type, &valflags);
 
-    if (value)
+    if ((value) && (size == sizeof(int)) && (type == plugin->URIDs.switch_channel))
     {
         plugin->channel = *((int*)(&value));
     }
