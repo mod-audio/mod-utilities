@@ -99,6 +99,8 @@ LV2_Handle SwitchTrigger::instantiate(const LV2_Descriptor* descriptor, double s
         }
     }
 
+    plugin->channel = 0;
+
     return (LV2_Handle)plugin;
 }
 
@@ -193,63 +195,31 @@ void SwitchTrigger::run(LV2_Handle instance, uint32_t n_samples)
     switch (channel) 
 	{
 	case 0:
-	    for ( uint32_t i = 0; i < n_samples; i++)
-		{
-		    *out_1 = *in;
-		    *out_2=0;
-		    *out_3=0;
-		    *out_4=0;
-		    in++;
-		    out_1++;
-		    out_2++;
-		    out_3++;
-		    out_4++;
-		}
+        memcpy(out_1, in, sizeof(float)*n_samples);
+        memset(out_2, 0, sizeof(float)*n_samples);
+        memset(out_3, 0, sizeof(float)*n_samples);
+        memset(out_4, 0, sizeof(float)*n_samples);
 	    break;
 	    
 	case 1:
-	    for (uint32_t i = 0; i < n_samples; i++)
-		{
-		    *out_1=0;
-		    *out_2 = *in;
-		    *out_3=0;
-		    *out_4=0;
-		    in++;
-		    out_1++;
-		    out_2++;
-		    out_3++;
-		    out_4++;
-		}
+        memcpy(out_2, in, sizeof(float)*n_samples);
+        memset(out_1, 0, sizeof(float)*n_samples);
+        memset(out_3, 0, sizeof(float)*n_samples);
+        memset(out_4, 0, sizeof(float)*n_samples);
 	    break;
   
 	case 2:
-	    for (uint32_t i = 0; i < n_samples; i++)
-		{
-		    *out_1=0;
-		    *out_2=0;
-		    *out_3 = *in;
-		    *out_4=0;
-		    in++;
-		    out_1++;
-		    out_2++;
-		    out_3++;
-		    out_4++;
-		}
+        memcpy(out_3, in, sizeof(float)*n_samples);
+        memset(out_1, 0, sizeof(float)*n_samples);
+        memset(out_2, 0, sizeof(float)*n_samples);
+        memset(out_4, 0, sizeof(float)*n_samples);
 	    break;
 
 	case 3:
-	    for (uint32_t i = 0; i < n_samples; i++)
-		{
-		    *out_1=0;
-		    *out_2=0;
-		    *out_3=0;
-		    *out_4 = *in;
-		    in++;
-		    out_1++;
-		    out_2++;
-		    out_3++;
-		    out_4++;
-		}
+        memcpy(out_4, in, sizeof(float)*n_samples);
+        memset(out_1, 0, sizeof(float)*n_samples);
+        memset(out_2, 0, sizeof(float)*n_samples);
+        memset(out_3, 0, sizeof(float)*n_samples);
 	    break;
 
 	}
