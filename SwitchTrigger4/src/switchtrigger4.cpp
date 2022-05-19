@@ -32,6 +32,8 @@ public:
     static void connect_port(LV2_Handle instance, uint32_t port, void *data);
     static void run(LV2_Handle instance, uint32_t n_samples);
     static void cleanup(LV2_Handle instance);
+    static LV2_State_Status channel_save(LV2_Handle handle, LV2_State_Store_Function store, LV2_State_Handle state_handle, uint32_t flags, const LV2_Feature* const* features);
+    static LV2_State_Status channel_restore(LV2_Handle handle, LV2_State_Retrieve_Function retrieve, LV2_State_Handle state_handle, uint32_t flags, const LV2_Feature* const* features);
     static const void* extension_data(const char* uri);
     int select_channel();
     float *in;
@@ -70,40 +72,6 @@ static const LV2_Descriptor Descriptor = {
 
 /**********************************************************************************************************************************************************/
 
-static LV2_State_Status channel_save(LV2_Handle handle, LV2_State_Store_Function store, LV2_State_Handle state_handle,
-        uint32_t flags, const LV2_Feature* const* features)
-{
-    SwitchTrigger *plugin = (SwitchTrigger*)handle;
-
-    void *body = &plugin->channel;
-    store(state_handle, plugin->URIDs.switch_channel, body, sizeof(int),
-           plugin->URIDs.atom_Path, LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE);
-
-    return LV2_STATE_SUCCESS;
-}
-
-/**********************************************************************************************************************************************************/
-
-static LV2_State_Status channel_restore(LV2_Handle handle, LV2_State_Retrieve_Function retrieve, LV2_State_Handle state_handle,
-        uint32_t flags, const LV2_Feature* const* features)
-{
-    SwitchTrigger *plugin = (SwitchTrigger*)handle;
-
-    size_t   size;
-    uint32_t type;
-    uint32_t valflags;
-
-    const void* value = retrieve( state_handle, plugin->URIDs.switch_channel, &size, &type, &valflags);
-
-    if (value)
-    {
-        plugin->channel = *((int*)(&value));
-    }
-
-    return LV2_STATE_SUCCESS;
-}
-/**********************************************************************************************************************************************************/
-
 LV2_SYMBOL_EXPORT
 const LV2_Descriptor* lv2_descriptor(uint32_t index)
 {
@@ -126,6 +94,7 @@ LV2_Handle SwitchTrigger::instantiate(const LV2_Descriptor* descriptor, double s
             {
                 plugin->URIDs.atom_Path = plugin->urid_map->map(plugin->urid_map->handle,LV2_ATOM__Path);
                 plugin->URIDs.switch_channel = plugin->urid_map->map(plugin->urid_map->handle,CHANNEL_URI);
+                break;
             }
         }
     }
@@ -291,6 +260,41 @@ void SwitchTrigger::run(LV2_Handle instance, uint32_t n_samples)
 void SwitchTrigger::cleanup(LV2_Handle instance)
 {
     delete ((SwitchTrigger *) instance);
+}
+
+/**********************************************************************************************************************************************************/
+
+LV2_State_Status SwitchTrigger::channel_save(LV2_Handle handle, LV2_State_Store_Function store, LV2_State_Handle state_handle,
+        uint32_t flags, const LV2_Feature* const* features)
+{
+    SwitchTrigger *plugin = (SwitchTrigger*)handle;
+
+    void *body = &plugin->channel;
+    store(state_handle, plugin->URIDs.switch_channel, body, sizeof(int),
+           plugin->URIDs.atom_Path, LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE);
+
+    return LV2_STATE_SUCCESS;
+}
+
+/**********************************************************************************************************************************************************/
+
+LV2_State_Status SwitchTrigger::channel_restore(LV2_Handle handle, LV2_State_Retrieve_Function retrieve, LV2_State_Handle state_handle,
+        uint32_t flags, const LV2_Feature* const* features)
+{
+    SwitchTrigger *plugin = (SwitchTrigger*)handle;
+
+    size_t   size;
+    uint32_t type;
+    uint32_t valflags;
+
+    const void* value = retrieve( state_handle, plugin->URIDs.switch_channel, &size, &type, &valflags);
+
+    if (value)
+    {
+        plugin->channel = *((int*)(&value));
+    }
+
+    return LV2_STATE_SUCCESS;
 }
 
 /**********************************************************************************************************************************************************/
