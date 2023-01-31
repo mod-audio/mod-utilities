@@ -2,14 +2,24 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+
 #include <lv2.h>
+#include<lv2/lv2plug.in/ns/ext/urid/urid.h>
+#include<lv2/lv2plug.in/ns/ext/atom/util.h>
+#include<lv2/lv2plug.in/ns/ext/atom/atom.h>
+#include<lv2/lv2plug.in/ns/ext/state/state.h>
 
 /**********************************************************************************************************************************************************/
 
 #define PLUGIN_URI "http://moddevices.com/plugins/mod-devel/SwitchTrigger4"
-enum {IN, OUT_1, OUT_2, OUT_3, OUT_4, CHANNEL1, CHANNEL2, CHANNEL3, CHANNEL4};
+#define CHANNEL_URI "http://moddevices.com/plugins/mod-devel/SwitchTrigger4#channel"
+
+enum {IN, OUT_1, OUT_2, OUT_3, OUT_4, CHANNEL1, CHANNEL2, CHANNEL3, CHANNEL4, CHANNEL_OUTPUT};
 
 /**********************************************************************************************************************************************************/
+
+static LV2_State_Status channel_save(LV2_Handle handle, LV2_State_Store_Function store, LV2_State_Handle state_handle, uint32_t flags, const LV2_Feature* const* features);
+static LV2_State_Status channel_restore(LV2_Handle handle, LV2_State_Retrieve_Function retrieve, LV2_State_Handle state_handle, uint32_t flags, const LV2_Feature* const* features);
 
 class SwitchTrigger
 {
@@ -22,6 +32,8 @@ public:
     static void connect_port(LV2_Handle instance, uint32_t port, void *data);
     static void run(LV2_Handle instance, uint32_t n_samples);
     static void cleanup(LV2_Handle instance);
+    static LV2_State_Status channel_save(LV2_Handle handle, LV2_State_Store_Function store, LV2_State_Handle state_handle, uint32_t flags, const LV2_Feature* const* features);
+    static LV2_State_Status channel_restore(LV2_Handle handle, LV2_State_Retrieve_Function retrieve, LV2_State_Handle state_handle, uint32_t flags, const LV2_Feature* const* features);
     static const void* extension_data(const char* uri);
     int select_channel();
     float *in;
@@ -33,7 +45,17 @@ public:
     float *channel2;
     float *channel3;
     float *channel4;
+    float *channel_output;
     int channel;
+
+    LV2_URID_Map *urid_map;
+
+    struct urids
+    {
+        LV2_URID    atom_Int;
+        LV2_URID    switch_channel;
+    } URIDs;
+
 };
 
 /**********************************************************************************************************************************************************/
@@ -63,6 +85,23 @@ const LV2_Descriptor* lv2_descriptor(uint32_t index)
 LV2_Handle SwitchTrigger::instantiate(const LV2_Descriptor* descriptor, double samplerate, const char* bundle_path, const LV2_Feature* const* features)
 {
     SwitchTrigger *plugin = new SwitchTrigger();
+
+    for(int i=0; features[i]; i++)
+    {
+        if(!strcmp(features[i]->URI,LV2_URID__map))
+        {
+            plugin->urid_map = (LV2_URID_Map *) features[i]->data;
+            if(plugin->urid_map)
+            {
+                plugin->URIDs.atom_Int = plugin->urid_map->map(plugin->urid_map->handle,LV2_ATOM__Int);
+                plugin->URIDs.switch_channel = plugin->urid_map->map(plugin->urid_map->handle,CHANNEL_URI);
+                break;
+            }
+        }
+    }
+
+    plugin->channel = 0;
+
     return (LV2_Handle)plugin;
 }
 
@@ -116,6 +155,9 @@ void SwitchTrigger::connect_port(LV2_Handle instance, uint32_t port, void *data)
         case CHANNEL4:
             plugin->channel4 = (float*) data;
             break;
+        case CHANNEL_OUTPUT:
+            plugin->channel_output = (float*) data;
+            break;
     }
 }
 
@@ -157,66 +199,35 @@ void SwitchTrigger::run(LV2_Handle instance, uint32_t n_samples)
     switch (channel) 
 	{
 	case 0:
-	    for ( uint32_t i = 0; i < n_samples; i++)
-		{
-		    *out_1 = *in;
-		    *out_2=0;
-		    *out_3=0;
-		    *out_4=0;
-		    in++;
-		    out_1++;
-		    out_2++;
-		    out_3++;
-		    out_4++;
-		}
+        memcpy(out_1, in, sizeof(float)*n_samples);
+        memset(out_2, 0, sizeof(float)*n_samples);
+        memset(out_3, 0, sizeof(float)*n_samples);
+        memset(out_4, 0, sizeof(float)*n_samples);
 	    break;
 	    
 	case 1:
-	    for (uint32_t i = 0; i < n_samples; i++)
-		{
-		    *out_1=0;
-		    *out_2 = *in;
-		    *out_3=0;
-		    *out_4=0;
-		    in++;
-		    out_1++;
-		    out_2++;
-		    out_3++;
-		    out_4++;
-		}
+        memcpy(out_2, in, sizeof(float)*n_samples);
+        memset(out_1, 0, sizeof(float)*n_samples);
+        memset(out_3, 0, sizeof(float)*n_samples);
+        memset(out_4, 0, sizeof(float)*n_samples);
 	    break;
   
 	case 2:
-	    for (uint32_t i = 0; i < n_samples; i++)
-		{
-		    *out_1=0;
-		    *out_2=0;
-		    *out_3 = *in;
-		    *out_4=0;
-		    in++;
-		    out_1++;
-		    out_2++;
-		    out_3++;
-		    out_4++;
-		}
+        memcpy(out_3, in, sizeof(float)*n_samples);
+        memset(out_1, 0, sizeof(float)*n_samples);
+        memset(out_2, 0, sizeof(float)*n_samples);
+        memset(out_4, 0, sizeof(float)*n_samples);
 	    break;
 
 	case 3:
-	    for (uint32_t i = 0; i < n_samples; i++)
-		{
-		    *out_1=0;
-		    *out_2=0;
-		    *out_3=0;
-		    *out_4 = *in;
-		    in++;
-		    out_1++;
-		    out_2++;
-		    out_3++;
-		    out_4++;
-		}
+        memcpy(out_4, in, sizeof(float)*n_samples);
+        memset(out_1, 0, sizeof(float)*n_samples);
+        memset(out_2, 0, sizeof(float)*n_samples);
+        memset(out_3, 0, sizeof(float)*n_samples);
 	    break;
-
 	}
+
+    plugin->channel_output = (float*)&channel;
 }
 
 /**********************************************************************************************************************************************************/
@@ -228,7 +239,49 @@ void SwitchTrigger::cleanup(LV2_Handle instance)
 
 /**********************************************************************************************************************************************************/
 
+LV2_State_Status SwitchTrigger::channel_save(LV2_Handle handle, LV2_State_Store_Function store, LV2_State_Handle state_handle,
+        uint32_t flags, const LV2_Feature* const* features)
+{
+    SwitchTrigger *plugin = (SwitchTrigger*)handle;
+
+    void *body = &plugin->channel;
+    store(state_handle, plugin->URIDs.switch_channel, body, sizeof(int),
+           plugin->URIDs.atom_Int, LV2_STATE_IS_POD | LV2_STATE_IS_PORTABLE);
+
+    return LV2_STATE_SUCCESS;
+}
+
+/**********************************************************************************************************************************************************/
+
+LV2_State_Status SwitchTrigger::channel_restore(LV2_Handle handle, LV2_State_Retrieve_Function retrieve, LV2_State_Handle state_handle,
+        uint32_t flags, const LV2_Feature* const* features)
+{
+    SwitchTrigger *plugin = (SwitchTrigger*)handle;
+
+    size_t   size;
+    uint32_t type;
+    uint32_t valflags;
+
+    const void* value = retrieve( state_handle, plugin->URIDs.switch_channel, &size, &type, &valflags);
+
+    if ((value) && (size == sizeof(int)) && (type == plugin->URIDs.switch_channel))
+    {
+        plugin->channel = *((int*)(&value));
+    }
+
+    return LV2_STATE_SUCCESS;
+}
+
+/**********************************************************************************************************************************************************/
+
 const void* SwitchTrigger::extension_data(const char* uri)
 {
+    static const LV2_State_Interface state = { channel_save, channel_restore };
+
+    if (!strcmp(uri, LV2_STATE__interface))
+    {
+        return &state;
+    }
+
     return NULL;
 }
