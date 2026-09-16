@@ -8,7 +8,7 @@
 /**********************************************************************************************************************************************************/
 
 #define PLUGIN_URI "http://moddevices.com/plugins/mod-devel/BandPassFilter"
-#define TAMANHO_DO_BUFFER 1024
+#define TAMANHO_DO_BUFFER 8192 /* FIXME use options interface */
 enum {IN, OUT_1, FREQ, Q, ORDER, PLUGIN_PORT_COUNT};
 
 /**********************************************************************************************************************************************************/

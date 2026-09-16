@@ -8,7 +8,7 @@
 /**********************************************************************************************************************************************************/
 
 #define PLUGIN_URI "http://moddevices.com/plugins/mod-devel/CrossOver2"
-#define TAMANHO_DO_BUFFER 1024
+#define TAMANHO_DO_BUFFER 8192 /* FIXME use options interface */
 enum {IN, OUT_1, OUT_2, FREQ, GAIN_1, GAIN_2, ORDER, PLUGIN_PORT_COUNT};
 
 /**********************************************************************************************************************************************************/
