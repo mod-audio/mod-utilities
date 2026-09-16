@@ -8,7 +8,9 @@
 /**********************************************************************************************************************************************************/
 
 #define PLUGIN_URI "http://moddevices.com/plugins/mod-devel/BandPassFilter"
-#define TAMANHO_DO_BUFFER 8192 /* FIXME use options interface */
+#include "BufferSize.h"
+
+#define BUFFER_SIZE_FALLBACK 8192 /* when the host does not report bufsz:maxBlockLength */
 enum {IN, OUT_1, FREQ, Q, ORDER, PLUGIN_PORT_COUNT};
 
 /**********************************************************************************************************************************************************/
@@ -33,6 +35,7 @@ public:
     
     double *y;
     double *u;
+    uint32_t capacity; /* samples per scratch buffer, see BufferSize.h */
     
     double T;
     double f;
@@ -80,8 +83,9 @@ LV2_Handle BandPassFilter::instantiate(const LV2_Descriptor* descriptor, double 
 {
     BandPassFilter *plugin = new BandPassFilter();
     
-    plugin->y = (double*)malloc(TAMANHO_DO_BUFFER*sizeof(double));
-    plugin->u = (double*)malloc(TAMANHO_DO_BUFFER*sizeof(double));
+    plugin->capacity = mod_block_capacity(features, BUFFER_SIZE_FALLBACK);
+    plugin->y = (double*)malloc(plugin->capacity*sizeof(double));
+    plugin->u = (double*)malloc(plugin->capacity*sizeof(double));
     
     plugin->T = 1/samplerate;
     plugin->f = 1;
@@ -146,10 +150,8 @@ void BandPassFilter::connect_port(LV2_Handle instance, uint32_t port, void *data
 
 /**********************************************************************************************************************************************************/
 
-void BandPassFilter::run(LV2_Handle instance, uint32_t n_samples)
+static void process(BandPassFilter *plugin, const float *in, float *out_1, uint32_t n_samples)
 {
-    BandPassFilter *plugin;
-    plugin = (BandPassFilter *) instance;    
     double f_before = plugin->f;
     double bw_before = plugin->bw;
     float Order;
@@ -162,7 +164,7 @@ void BandPassFilter::run(LV2_Handle instance, uint32_t n_samples)
     
     for (uint32_t i=0; i<= n_samples-1;i++)
     {
-		plugin->u[i] = plugin->in[i];
+		plugin->u[i] = in[i];
 	}
     
     switch (int(Order))
@@ -182,8 +184,22 @@ void BandPassFilter::run(LV2_Handle instance, uint32_t n_samples)
     
     for (uint32_t i=0; i<= n_samples-1;i++)
     {
-		plugin->out_1[i] = plugin->y[i];
+		out_1[i] = plugin->y[i];
 	}
+}
+
+void BandPassFilter::run(LV2_Handle instance, uint32_t n_samples)
+{
+    BandPassFilter *plugin;
+    plugin = (BandPassFilter *) instance;
+
+    /* the scratch buffers hold `capacity` samples; larger blocks are processed in chunks */
+    for (uint32_t offset = 0; offset < n_samples; )
+    {
+        const uint32_t n = mod_next_chunk(n_samples - offset, plugin->capacity);
+        process(plugin, plugin->in + offset, plugin->out_1 + offset, n);
+        offset += n;
+    }
 }
 
 /**********************************************************************************************************************************************************/
