@@ -137,4 +137,4 @@ mod:gui [
 ];
 
 lv2:minorVersion 1;
-lv2:microVersion 2 .
+lv2:microVersion 0 .

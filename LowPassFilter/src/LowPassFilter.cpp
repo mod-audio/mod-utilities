@@ -8,9 +8,7 @@
 /**********************************************************************************************************************************************************/
 
 #define PLUGIN_URI "http://moddevices.com/plugins/mod-devel/LowPassFilter"
-#include "BufferSize.h"
-
-#define BUFFER_SIZE_FALLBACK 8192 /* when the host does not report bufsz:maxBlockLength */
+#define TAMANHO_DO_BUFFER 1024
 enum {IN, OUT_1, FREQ, ORDER, PLUGIN_PORT_COUNT};
 
 /**********************************************************************************************************************************************************/
@@ -34,7 +32,6 @@ public:
     
     double *y;
     double *u;
-    uint32_t capacity; /* samples per scratch buffer, see BufferSize.h */
     
     double T;
     double f;
@@ -74,9 +71,8 @@ LV2_Handle LowPassFilter::instantiate(const LV2_Descriptor* descriptor, double s
 {
     LowPassFilter *plugin = new LowPassFilter();
     
-    plugin->capacity = mod_block_capacity(features, BUFFER_SIZE_FALLBACK);
-    plugin->y = (double*)malloc(plugin->capacity*sizeof(double));
-    plugin->u = (double*)malloc(plugin->capacity*sizeof(double));
+    plugin->y = (double*)malloc(TAMANHO_DO_BUFFER*sizeof(double));
+    plugin->u = (double*)malloc(TAMANHO_DO_BUFFER*sizeof(double));
     
     plugin->T = 1/samplerate;
     plugin->f = 1;
@@ -130,8 +126,10 @@ void LowPassFilter::connect_port(LV2_Handle instance, uint32_t port, void *data)
 
 /**********************************************************************************************************************************************************/
 
-static void process(LowPassFilter *plugin, const float *in, float *out_1, uint32_t n_samples)
+void LowPassFilter::run(LV2_Handle instance, uint32_t n_samples)
 {
+    LowPassFilter *plugin;
+    plugin = (LowPassFilter *) instance;    
     double f_before = plugin->f;
     float Order;
     
@@ -141,7 +139,7 @@ static void process(LowPassFilter *plugin, const float *in, float *out_1, uint32
     
     for (uint32_t i=0; i<= n_samples-1;i++)
     {
-		plugin->u[i] = in[i];
+		plugin->u[i] = plugin->in[i];
 	}
     
     switch (int(Order))
@@ -161,22 +159,8 @@ static void process(LowPassFilter *plugin, const float *in, float *out_1, uint32
     
     for (uint32_t i=0; i<= n_samples-1;i++)
     {
-		out_1[i] = plugin->y[i];
+		plugin->out_1[i] = plugin->y[i];
 	}
-}
-
-void LowPassFilter::run(LV2_Handle instance, uint32_t n_samples)
-{
-    LowPassFilter *plugin;
-    plugin = (LowPassFilter *) instance;
-
-    /* the scratch buffers hold `capacity` samples; larger blocks are processed in chunks */
-    for (uint32_t offset = 0; offset < n_samples; )
-    {
-        const uint32_t n = mod_next_chunk(n_samples - offset, plugin->capacity);
-        process(plugin, plugin->in + offset, plugin->out_1 + offset, n);
-        offset += n;
-    }
 }
 
 /**********************************************************************************************************************************************************/

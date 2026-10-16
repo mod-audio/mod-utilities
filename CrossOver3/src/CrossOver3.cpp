@@ -8,9 +8,7 @@
 /**********************************************************************************************************************************************************/
 
 #define PLUGIN_URI "http://moddevices.com/plugins/mod-devel/CrossOver3"
-#include "BufferSize.h"
-
-#define BUFFER_SIZE_FALLBACK 8192 /* when the host does not report bufsz:maxBlockLength */
+#define TAMANHO_DO_BUFFER 1024
 enum {IN, OUT_1, OUT_2, OUT_3, FREQ_1, FREQ_2, GAIN_1, GAIN_2, GAIN_3, ORDER, PLUGIN_PORT_COUNT};
 
 /**********************************************************************************************************************************************************/
@@ -42,7 +40,6 @@ public:
     double *y2;
     double *y3;
     double *u;
-    uint32_t capacity; /* samples per scratch buffer, see BufferSize.h */
     
     
     double T;
@@ -113,11 +110,10 @@ LV2_Handle CrossOver::instantiate(const LV2_Descriptor* descriptor, double sampl
 {
     CrossOver *plugin = new CrossOver();
     
-    plugin->capacity = mod_block_capacity(features, BUFFER_SIZE_FALLBACK);
-    plugin->y1 = (double*)malloc(plugin->capacity*sizeof(double));
-    plugin->y2 = (double*)malloc(plugin->capacity*sizeof(double));
-    plugin->y3 = (double*)malloc(plugin->capacity*sizeof(double));
-    plugin->u = (double*)malloc(plugin->capacity*sizeof(double));
+    plugin->y1 = (double*)malloc(TAMANHO_DO_BUFFER*sizeof(double));
+    plugin->y2 = (double*)malloc(TAMANHO_DO_BUFFER*sizeof(double));
+    plugin->y3 = (double*)malloc(TAMANHO_DO_BUFFER*sizeof(double));
+    plugin->u = (double*)malloc(TAMANHO_DO_BUFFER*sizeof(double));
     
     plugin->T = 1/samplerate;
     plugin->f_1 = 1;
@@ -218,8 +214,10 @@ void CrossOver::connect_port(LV2_Handle instance, uint32_t port, void *data)
 
 /**********************************************************************************************************************************************************/
 
-static void process(CrossOver *plugin, const float *in, float *out_1, float *out_2, float *out_3, uint32_t n_samples)
+void CrossOver::run(LV2_Handle instance, uint32_t n_samples)
 {
+    CrossOver *plugin;
+    plugin = (CrossOver *) instance;    
     double f_before_1 = plugin->f_1;
     double f_before_2 = plugin->f_2;
     float Order;
@@ -237,7 +235,7 @@ static void process(CrossOver *plugin, const float *in, float *out_1, float *out
     
     for (uint32_t i=0; i<= n_samples-1;i++)
     {
-		plugin->u[i] = in[i];
+		plugin->u[i] = plugin->in[i];
 	}
 	
 	/*********************************************************/	
@@ -259,7 +257,7 @@ static void process(CrossOver *plugin, const float *in, float *out_1, float *out
     
     for (uint32_t i=0; i<= n_samples-1;i++)
     {
-		out_1[i] = plugin->y1[i];
+		plugin->out_1[i] = plugin->y1[i];
 	}
 	
 	/*********************************************************/
@@ -269,7 +267,7 @@ static void process(CrossOver *plugin, const float *in, float *out_1, float *out
     
     for (uint32_t i=1; i<=n_samples; i++)
 	{
-		out_1[i-1] = (g_before_1 + ((plugin->g_1 - g_before_1)/(n_samples > 1 ? n_samples - 1 : 1))*(i-1) )*(float)out_1[i-1];
+		plugin->out_1[i-1] = (g_before_1 + ((plugin->g_1 - g_before_1)/(n_samples - 1))*(i-1) )*(float)plugin->out_1[i-1];
 	}
 	
 	
@@ -292,7 +290,7 @@ static void process(CrossOver *plugin, const float *in, float *out_1, float *out
     
     for (uint32_t i=0; i<= n_samples-1;i++)
     {
-		out_2[i] = plugin->y2[i];
+		plugin->out_2[i] = plugin->y2[i];
 	}
 	
 	/*********************************************************/
@@ -302,7 +300,7 @@ static void process(CrossOver *plugin, const float *in, float *out_1, float *out
     
     for (uint32_t i=1; i<=n_samples; i++)
 	{
-		out_2[i-1] = (g_before_2 + ((plugin->g_2 - g_before_2)/(n_samples > 1 ? n_samples - 1 : 1))*(i-1) )*(float)out_2[i-1];
+		plugin->out_2[i-1] = (g_before_2 + ((plugin->g_2 - g_before_2)/(n_samples - 1))*(i-1) )*(float)plugin->out_2[i-1];
 	} 
 	
 	/*********************************************************//*********************************************************/
@@ -324,7 +322,7 @@ static void process(CrossOver *plugin, const float *in, float *out_1, float *out
     
     for (uint32_t i=0; i<= n_samples-1;i++)
     {
-		out_3[i] = plugin->y3[i];
+		plugin->out_3[i] = plugin->y3[i];
 	}
 	
 	/*********************************************************/
@@ -334,24 +332,10 @@ static void process(CrossOver *plugin, const float *in, float *out_1, float *out
     
     for (uint32_t i=1; i<=n_samples; i++)
 	{
-		out_3[i-1] = (g_before_3 + ((plugin->g_3 - g_before_3)/(n_samples > 1 ? n_samples - 1 : 1))*(i-1) )*(float)out_3[i-1];
+		plugin->out_3[i-1] = (g_before_3 + ((plugin->g_3 - g_before_3)/(n_samples - 1))*(i-1) )*(float)plugin->out_3[i-1];
 	}
 	
 
-}
-
-void CrossOver::run(LV2_Handle instance, uint32_t n_samples)
-{
-    CrossOver *plugin;
-    plugin = (CrossOver *) instance;
-
-    /* the scratch buffers hold `capacity` samples; larger blocks are processed in chunks */
-    for (uint32_t offset = 0; offset < n_samples; )
-    {
-        const uint32_t n = mod_next_chunk(n_samples - offset, plugin->capacity);
-        process(plugin, plugin->in + offset, plugin->out_1 + offset, plugin->out_2 + offset, plugin->out_3 + offset, n);
-        offset += n;
-    }
 }
 
 /**********************************************************************************************************************************************************/
