@@ -1,6 +1,31 @@
 #include <cmath>
 #include "ModFilters.h"
 
+/* Store the last `depth` input/output samples as the history for the next block.
+ * For blocks shorter than `depth`, the missing samples come from the previous history. */
+static void store_history(const double *u, const double *y, int N, int depth, double **U, double **Y)
+{
+	double oldU[6], oldY[6];
+	for (int k = 0; k < depth; k++)
+	{
+		oldU[k] = *U[k];
+		oldY[k] = *Y[k];
+	}
+	for (int k = 1; k <= depth; k++)
+	{
+		if (N >= k)
+		{
+			*U[k-1] = u[N-k];
+			*Y[k-1] = y[N-k];
+		}
+		else
+		{
+			*U[k-1] = oldU[k-N-1];
+			*Y[k-1] = oldY[k-N-1];
+		}
+	}
+}
+
 void LPF1(double *u, double *y, int N, double f_before, double f_now, double T, double *Y_1, double *U_1, double *Y_2, double *U_2, double *Y_3, double *U_3 )
 {
 	double K;
@@ -36,12 +61,9 @@ void LPF1(double *u, double *y, int N, double f_before, double f_now, double T, 
 		y[i] = (-B*y[i-1] + K*(u[i] + u[i-1]) )/A;
 	}
 	
-	U_1[0] = u[N-1];
-	Y_1[0] = y[N-1];
-	U_2[0] = u[N-2];
-	Y_2[0] = y[N-2];
-	U_3[0] = u[N-3];
-	Y_3[0] = y[N-3];
+	double *U[3] = {U_1, U_2, U_3};
+	double *Y[3] = {Y_1, Y_2, Y_3};
+	store_history(u, y, N, 3, U, Y);
 	
 }
 
@@ -80,12 +102,9 @@ void HPF1(double *u, double *y, int N, double f_before, double f_now, double T, 
 		y[i] = (-B*y[i-1] + K*(u[i] - u[i-1]) )/A;
 	}
 	
-	U_1[0] = u[N-1];
-	Y_1[0] = y[N-1];
-	U_2[0] = u[N-2];
-	Y_2[0] = y[N-2];
-	U_3[0] = u[N-3];
-	Y_3[0] = y[N-3];
+	double *U[3] = {U_1, U_2, U_3};
+	double *Y[3] = {Y_1, Y_2, Y_3};
+	store_history(u, y, N, 3, U, Y);
 	
 }
 
@@ -142,12 +161,9 @@ void LPF2(double *u, double *y, int N, double f_before, double f_now, double T, 
 		y[i] = (-B*y[i-1] -C*y[i-2] + K*(u[i] +  2*u[i-1] + u[i-2]) )/A;
 	}
 	
-	U_1[0] = u[N-1];
-	Y_1[0] = y[N-1];
-	U_2[0] = u[N-2];
-	Y_2[0] = y[N-2];
-	U_3[0] = u[N-3];
-	Y_3[0] = y[N-3];
+	double *U[3] = {U_1, U_2, U_3};
+	double *Y[3] = {Y_1, Y_2, Y_3};
+	store_history(u, y, N, 3, U, Y);
 	
 }
 
@@ -204,12 +220,9 @@ void HPF2(double *u, double *y, int N, double f_before, double f_now, double T, 
 		y[i] = (-B*y[i-1] -C*y[i-2] + K*(u[i] -  2*u[i-1] + u[i-2]) )/A;
 	}
 	
-	U_1[0] = u[N-1];
-	Y_1[0] = y[N-1];
-	U_2[0] = u[N-2];
-	Y_2[0] = y[N-2];
-	U_3[0] = u[N-3];
-	Y_3[0] = y[N-3];
+	double *U[3] = {U_1, U_2, U_3};
+	double *Y[3] = {Y_1, Y_2, Y_3};
+	store_history(u, y, N, 3, U, Y);
 	
 }
 
@@ -285,12 +298,9 @@ void LPF3(double *u, double *y, int N, double f_before, double f_now, double T, 
 		y[i] = (-B*y[i-1] - C*y[i-2] - D*y[i-3] + K*(u[i] +  3*u[i-1] + 3*u[i-2] + u[i-3]) )/A;
 	}
 	
-	U_1[0] = u[N-1];
-	Y_1[0] = y[N-1];
-	U_2[0] = u[N-2];
-	Y_2[0] = y[N-2];
-	U_3[0] = u[N-3];
-	Y_3[0] = y[N-3];
+	double *U[3] = {U_1, U_2, U_3};
+	double *Y[3] = {Y_1, Y_2, Y_3};
+	store_history(u, y, N, 3, U, Y);
 	
 }
 
@@ -366,12 +376,9 @@ void HPF3(double *u, double *y, int N, double f_before, double f_now, double T, 
 		y[i] = (-B*y[i-1] - C*y[i-2] - D*y[i-3] + K*(u[i] -  3*u[i-1] + 3*u[i-2] - u[i-3]) )/A;
 	}
 	
-	U_1[0] = u[N-1];
-	Y_1[0] = y[N-1];
-	U_2[0] = u[N-2];
-	Y_2[0] = y[N-2];
-	U_3[0] = u[N-3];
-	Y_3[0] = y[N-3];
+	double *U[3] = {U_1, U_2, U_3};
+	double *Y[3] = {Y_1, Y_2, Y_3};
+	store_history(u, y, N, 3, U, Y);
 	
 }
 
@@ -432,18 +439,9 @@ void BPF1(double *u, double *y, int N, double f_before, double f_now, double BW_
 		y[i] = (-B*y[i-1] -C*y[i-2] + K*(u[i] - u[i-2]) )/A;
 	}
 	
-	U_1[0] = u[N-1];
-	Y_1[0] = y[N-1];
-	U_2[0] = u[N-2];
-	Y_2[0] = y[N-2];
-	U_3[0] = u[N-3];
-	Y_3[0] = y[N-3];
-	U_4[0] = u[N-4];
-	Y_4[0] = y[N-4];
-	U_5[0] = u[N-5];
-	Y_5[0] = y[N-5];
-	U_6[0] = u[N-6];
-	Y_6[0] = y[N-6];
+	double *U[6] = {U_1, U_2, U_3, U_4, U_5, U_6};
+	double *Y[6] = {Y_1, Y_2, Y_3, Y_4, Y_5, Y_6};
+	store_history(u, y, N, 6, U, Y);
 	
 }
 
@@ -543,18 +541,9 @@ void BPF2(double *u, double *y, int N, double f_before, double f_now, double BW_
 		y[i] = (-B*y[i-1] - C*y[i-2] - D*y[i-3] - E*y[i-4] + K*(u[i] - 2*u[i-2] + u[i-4]) )/A;
 	}
 	
-	U_1[0] = u[N-1];
-	Y_1[0] = y[N-1];
-	U_2[0] = u[N-2];
-	Y_2[0] = y[N-2];
-	U_3[0] = u[N-3];
-	Y_3[0] = y[N-3];
-	U_4[0] = u[N-4];
-	Y_4[0] = y[N-4];
-	U_5[0] = u[N-5];
-	Y_5[0] = y[N-5];
-	U_6[0] = u[N-6];
-	Y_6[0] = y[N-6];
+	double *U[6] = {U_1, U_2, U_3, U_4, U_5, U_6};
+	double *Y[6] = {Y_1, Y_2, Y_3, Y_4, Y_5, Y_6};
+	store_history(u, y, N, 6, U, Y);
 	
 }
 
@@ -706,18 +695,9 @@ void BPF3(double *u, double *y, int N, double f_before, double f_now, double BW_
 		y[i] = (-B*y[i-1] - C*y[i-2] - D*y[i-3] - E*y[i-4] - F*y[i-5] - G*y[i-6] + K*(u[i] - 3*u[i-2] + 3*u[i-4] - u[i-6]) )/A;
 	}
 	
-	U_1[0] = u[N-1];
-	Y_1[0] = y[N-1];
-	U_2[0] = u[N-2];
-	Y_2[0] = y[N-2];
-	U_3[0] = u[N-3];
-	Y_3[0] = y[N-3];
-	U_4[0] = u[N-4];
-	Y_4[0] = y[N-4];
-	U_5[0] = u[N-5];
-	Y_5[0] = y[N-5];
-	U_6[0] = u[N-6];
-	Y_6[0] = y[N-6];
+	double *U[6] = {U_1, U_2, U_3, U_4, U_5, U_6};
+	double *Y[6] = {Y_1, Y_2, Y_3, Y_4, Y_5, Y_6};
+	store_history(u, y, N, 6, U, Y);
 	
 }
 
